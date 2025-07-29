@@ -1,60 +1,89 @@
+import { useState, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { Session, User } from "@supabase/supabase-js";
 import { Navigation } from "@/components/ui/navigation";
 import Home from "./pages/Home";
 import TechNews from "./pages/TechNews";
 import CyberNews from "./pages/CyberNews";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
+import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-const App = () => {
-  // In real app, these would come from Supabase auth context
-  const isAuthenticated = false;
-  
+function AppContent() {
+  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Set up auth state listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+      }
+    );
+
+    // Check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
   const handleLogin = () => {
-    console.log("Open login modal");
-    // In real app: open Supabase auth login
+    navigate("/auth");
   };
   
   const handleSignup = () => {
-    console.log("Open signup modal");
-    // In real app: open Supabase auth signup
+    navigate("/auth");
   };
   
-  const handleLogout = () => {
-    console.log("Logout user");
-    // In real app: call Supabase auth logout
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
   };
 
+  const isAuthenticated = !!session;
+
+  return (
+    <div className="min-h-screen bg-background">
+      <Navigation 
+        isAuthenticated={isAuthenticated}
+        onLoginClick={handleLogin}
+        onSignupClick={handleSignup}
+        onLogoutClick={handleLogout}
+      />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/tech-news" element={<TechNews />} />
+        <Route path="/cyber-news" element={<CyberNews />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/auth" element={<Auth />} />
+        {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </div>
+  );
+}
+
+const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <div className="min-h-screen bg-background">
-            <Navigation 
-              isAuthenticated={isAuthenticated}
-              onLoginClick={handleLogin}
-              onSignupClick={handleSignup}
-              onLogoutClick={handleLogout}
-            />
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/tech-news" element={<TechNews />} />
-              <Route path="/cyber-news" element={<CyberNews />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/contact" element={<Contact />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </div>
+          <AppContent />
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>
