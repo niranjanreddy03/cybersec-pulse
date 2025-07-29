@@ -54,10 +54,12 @@ export function Navigation({ isAuthenticated = false, onLoginClick, onSignupClic
         <div className="hidden md:flex items-center space-x-2">
           {isAuthenticated ? (
             <div className="flex items-center space-x-2">
-              <Button variant="ghost" size="sm">
-                <User className="h-4 w-4 mr-2" />
-                Profile
-              </Button>
+              <NavLink to="/profile">
+                <Button variant="ghost" size="sm">
+                  <User className="h-4 w-4 mr-2" />
+                  Profile
+                </Button>
+              </NavLink>
               <Button variant="outline" size="sm" onClick={onLogoutClick}>
                 Logout
               </Button>
@@ -118,10 +120,12 @@ export function Navigation({ isAuthenticated = false, onLoginClick, onSignupClic
               <div className="pt-4 border-t">
                 {isAuthenticated ? (
                   <div className="space-y-2">
-                    <Button variant="ghost" className="w-full justify-start">
-                      <User className="h-4 w-4 mr-2" />
-                      Profile
-                    </Button>
+                    <NavLink to="/profile" onClick={() => setIsOpen(false)}>
+                      <Button variant="ghost" className="w-full justify-start">
+                        <User className="h-4 w-4 mr-2" />
+                        Profile
+                      </Button>
+                    </NavLink>
                     <Button 
                       variant="outline" 
                       className="w-full justify-start"
