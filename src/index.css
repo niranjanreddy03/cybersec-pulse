@@ -8,35 +8,62 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Cybersecurity Professional Theme */
+    --background: 0 0% 99%;
+    --foreground: 215 25% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 215 25% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 215 25% 15%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Primary: Deep Cyber Blue */
+    --primary: 215 85% 25%;
+    --primary-foreground: 0 0% 98%;
+    --primary-hover: 215 85% 30%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Secondary: Professional Steel */
+    --secondary: 215 15% 92%;
+    --secondary-foreground: 215 25% 25%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 215 15% 95%;
+    --muted-foreground: 215 10% 45%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Accent: Cyber Green for highlights */
+    --accent: 145 70% 35%;
+    --accent-foreground: 0 0% 98%;
+    --accent-hover: 145 70% 40%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    /* Alert/Warning colors */
+    --warning: 45 90% 55%;
+    --warning-foreground: 215 25% 15%;
+    
+    --destructive: 0 75% 50%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 215 15% 88%;
+    --input: 215 15% 88%;
+    --ring: 215 85% 25%;
 
-    --radius: 0.5rem;
+    /* Cyber-specific colors */
+    --cyber-critical: 0 75% 50%;
+    --cyber-high: 25 85% 55%;
+    --cyber-medium: 45 90% 55%;
+    --cyber-low: 145 70% 45%;
+    --cyber-info: 215 85% 55%;
+
+    /* Gradients */
+    --gradient-cyber: linear-gradient(135deg, hsl(215 85% 25%), hsl(145 70% 35%));
+    --gradient-tech: linear-gradient(135deg, hsl(215 85% 25%), hsl(215 85% 35%));
+    --gradient-hero: linear-gradient(135deg, hsl(215 85% 15%) 0%, hsl(215 85% 25%) 50%, hsl(145 70% 25%) 100%);
+
+    /* Shadows */
+    --shadow-cyber: 0 4px 20px -4px hsl(215 85% 25% / 0.25);
+    --shadow-card: 0 2px 10px -2px hsl(215 15% 25% / 0.1);
+    --shadow-elevated: 0 8px 30px -8px hsl(215 85% 25% / 0.3);
+
+    --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
 
