@@ -2,17 +2,11 @@ import { Shield, TrendingUp, Clock, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import heroImage from "@/assets/hero-cybersec.jpg";
-
 export function HeroSection() {
-  return (
-    <section className="relative overflow-hidden">
+  return <section className="relative overflow-hidden">
       {/* Background with overlay */}
       <div className="absolute inset-0">
-        <img 
-          src={heroImage} 
-          alt="Cybersecurity News" 
-          className="w-full h-full object-cover"
-        />
+        <img src={heroImage} alt="Cybersecurity News" className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-r from-primary/95 via-primary/80 to-transparent" />
       </div>
       
@@ -45,7 +39,7 @@ export function HeroSection() {
               <TrendingUp className="h-4 w-4 mr-2" />
               Latest News
             </Button>
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-primary">
+            <Button size="lg" variant="outline" className="border-white hover:bg-white text-zinc-950">
               Subscribe for Updates
             </Button>
           </div>
@@ -88,6 +82,5 @@ export function HeroSection() {
       {/* Decorative elements */}
       <div className="absolute top-20 right-10 w-20 h-20 bg-accent/20 rounded-full blur-xl" />
       <div className="absolute bottom-20 right-20 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
-    </section>
-  );
+    </section>;
 }
