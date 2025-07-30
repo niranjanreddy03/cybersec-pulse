@@ -35,20 +35,11 @@ export function HeroSection() {
           
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 mb-12">
-            <Button size="lg" className="bg-accent text-accent-foreground hover:bg-accent-hover">
-              <TrendingUp className="h-4 w-4 mr-2" />
-              Latest News
-            </Button>
             <Button 
               size="lg" 
               variant="outline" 
               className="border-white hover:bg-white text-zinc-950"
-              onClick={() => {
-                const email = prompt("Enter your email to subscribe:");
-                if (email && email.includes('@')) {
-                  alert(`Thank you! We'll send updates to ${email}`);
-                }
-              }}
+              onClick={() => window.location.href = '/subscribe'}
             >
               Subscribe for Updates
             </Button>

@@ -19,6 +19,7 @@ export function Navigation({ isAuthenticated = false, onLoginClick, onSignupClic
     { label: "Quick News", path: "/quick-news" },
     { label: "Tech News", path: "/tech-news" },
     { label: "Cyber News", path: "/cyber-news" },
+    { label: "Subscribe", path: "/subscribe" },
     { label: "About", path: "/about" },
     { label: "Contact", path: "/contact" },
   ];
