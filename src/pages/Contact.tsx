@@ -12,7 +12,7 @@ export default function Contact() {
     {
       icon: Mail,
       title: "Email",
-      details: "editorial@cybersecbulletain.com",
+      details: "info@cybersecbulletain.com",
       description: "For editorial inquiries and news tips"
     },
     {

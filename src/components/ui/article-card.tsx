@@ -15,6 +15,7 @@ export interface Article {
   imageUrl?: string;
   priority?: "critical" | "high" | "medium" | "low";
   featured?: boolean;
+  url?: string;
 }
 
 interface ArticleCardProps {

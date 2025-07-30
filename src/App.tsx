@@ -8,12 +8,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { Session, User } from "@supabase/supabase-js";
 import { Navigation } from "@/components/ui/navigation";
 import Home from "./pages/Home";
+import QuickNews from "./pages/QuickNews";
 import TechNews from "./pages/TechNews";
 import CyberNews from "./pages/CyberNews";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
+import ArticleDetail from "./pages/ArticleDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -65,12 +67,14 @@ function AppContent() {
       />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/quick-news" element={<QuickNews />} />
         <Route path="/tech-news" element={<TechNews />} />
         <Route path="/cyber-news" element={<CyberNews />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/auth" element={<Auth />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/article/:id" element={<ArticleDetail />} />
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<NotFound />} />
       </Routes>

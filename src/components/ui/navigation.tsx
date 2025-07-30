@@ -16,6 +16,7 @@ export function Navigation({ isAuthenticated = false, onLoginClick, onSignupClic
 
   const navItems = [
     { label: "Home", path: "/" },
+    { label: "Quick News", path: "/quick-news" },
     { label: "Tech News", path: "/tech-news" },
     { label: "Cyber News", path: "/cyber-news" },
     { label: "About", path: "/about" },

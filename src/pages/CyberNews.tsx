@@ -141,7 +141,8 @@ export default function CyberNews() {
   }, [articles, searchTerm, sortBy, filterBy]);
 
   const handleReadMore = (id: string) => {
-    console.log("Navigate to cyber article:", id);
+    // Navigate to article detail page
+    window.location.href = `/article/${id}`;
   };
 
   const handleAddArticle = () => {

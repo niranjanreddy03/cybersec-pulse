@@ -1,7 +1,7 @@
 import { Shield, TrendingUp, Clock, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import heroImage from "@/assets/hero-cybersec.jpg";
+import heroImage from "@/assets/cyber-hero-bg.jpg";
 export function HeroSection() {
   return <section className="relative overflow-hidden">
       {/* Background with overlay */}
@@ -39,7 +39,17 @@ export function HeroSection() {
               <TrendingUp className="h-4 w-4 mr-2" />
               Latest News
             </Button>
-            <Button size="lg" variant="outline" className="border-white hover:bg-white text-zinc-950">
+            <Button 
+              size="lg" 
+              variant="outline" 
+              className="border-white hover:bg-white text-zinc-950"
+              onClick={() => {
+                const email = prompt("Enter your email to subscribe:");
+                if (email && email.includes('@')) {
+                  alert(`Thank you! We'll send updates to ${email}`);
+                }
+              }}
+            >
               Subscribe for Updates
             </Button>
           </div>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { HeroSection } from "@/components/ui/hero-section";
 import { ArticleCard, Article } from "@/components/ui/article-card";
+import { NewsletterSignup } from "@/components/ui/newsletter-signup";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TrendingUp, Clock, Shield, ArrowRight } from "lucide-react";
@@ -99,8 +100,8 @@ export default function Home() {
   const trendingArticles = articles.filter(article => article.priority === "high" || article.priority === "critical").slice(0, 4);
 
   const handleReadMore = (id: string) => {
-    // In real app: navigate to article detail page
-    console.log("Navigate to article:", id);
+    // Navigate to article detail page
+    window.location.href = `/article/${id}`;
   };
 
   if (loading) {
@@ -191,14 +192,8 @@ export default function Home() {
             </div>
             
             {/* Newsletter Signup */}
-            <div className="mt-8 p-6 bg-gradient-to-br from-primary/5 to-accent/5 rounded-lg border">
-              <h3 className="font-semibold mb-2">Stay Updated</h3>
-              <p className="text-sm text-muted-foreground mb-4">
-                Get the latest cybersecurity and tech news delivered to your inbox.
-              </p>
-              <Button className="w-full" size="sm">
-                Subscribe to Newsletter
-              </Button>
+            <div className="mt-8">
+              <NewsletterSignup compact />
             </div>
           </div>
         </div>
