@@ -84,33 +84,13 @@ export default function About() {
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {values.map((value, index) => <Card key={index} className="text-center hover:shadow-card transition-all">
-                <CardHeader>
-                  <div className="mx-auto mb-4 p-3 bg-primary/10 rounded-full w-fit">
-                    <value.icon className="h-6 w-6 text-primary" />
-                  </div>
-                  <CardTitle className="text-lg">{value.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">{value.description}</p>
-                </CardContent>
-              </Card>)}
+            {values.map((value, index) => {})}
           </div>
         </section>
 
         {/* Statistics */}
         <section className="mb-16">
-          <div className="bg-gradient-to-r from-primary/5 to-accent/5 rounded-2xl p-8">
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {stats.map((stat, index) => <div key={index} className="text-center">
-                  <div className="mx-auto mb-3 p-2 bg-primary/10 rounded-full w-fit">
-                    <stat.icon className="h-5 w-5 text-primary" />
-                  </div>
-                  <div className="text-3xl font-bold text-primary mb-1">{stat.value}</div>
-                  <div className="text-sm text-muted-foreground">{stat.label}</div>
-                </div>)}
-            </div>
-          </div>
+          
         </section>
 
         {/* Editorial Team */}
