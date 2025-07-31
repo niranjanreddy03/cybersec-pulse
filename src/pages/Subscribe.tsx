@@ -46,7 +46,7 @@ export default function Subscribe() {
     {
       id: "pro",
       name: "Pro Intelligence",
-      price: "$19/month",
+      price: "₹99/month",
       description: "Advanced threat intelligence",
       features: [
         "Daily security briefings",

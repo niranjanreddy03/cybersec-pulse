@@ -5,6 +5,7 @@ import { NewsletterSignup } from "@/components/ui/newsletter-signup";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TrendingUp, Clock, Shield, ArrowRight } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 // Mock data - in real app, this would come from WordPress API
 const mockArticles: Article[] = [
@@ -80,6 +81,49 @@ const mockArticles: Article[] = [
 export default function Home() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<any>(null);
+  const [subscriptionStatus, setSubscriptionStatus] = useState<string>("");
+
+  useEffect(() => {
+    // Check if user is logged in
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUser(user);
+      if (user) {
+        // Check subscription status
+        const hasSubscribed = localStorage.getItem('newsletter_subscribed') === 'true';
+        const isPaidPlan = localStorage.getItem('subscription_plan') === 'pro';
+        
+        if (isPaidPlan) {
+          setSubscriptionStatus("Pro Plan");
+        } else if (hasSubscribed) {
+          setSubscriptionStatus("Free Plan");
+        } else {
+          setSubscriptionStatus("Subscribed");
+        }
+      }
+    });
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        const hasSubscribed = localStorage.getItem('newsletter_subscribed') === 'true';
+        const isPaidPlan = localStorage.getItem('subscription_plan') === 'pro';
+        
+        if (isPaidPlan) {
+          setSubscriptionStatus("Pro Plan");
+        } else if (hasSubscribed) {
+          setSubscriptionStatus("Free Plan");
+        } else {
+          setSubscriptionStatus("Subscribed");
+        }
+      } else {
+        setSubscriptionStatus("");
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   useEffect(() => {
     // Simulate API call to WordPress
@@ -191,9 +235,20 @@ export default function Home() {
               ))}
             </div>
             
-            {/* Newsletter Signup */}
+            {/* Newsletter Signup or Subscription Status */}
             <div className="mt-8">
-              <NewsletterSignup compact />
+              {user && subscriptionStatus ? (
+                <div className="text-center p-4 bg-primary/10 rounded-lg border">
+                  <Badge className="bg-primary text-primary-foreground mb-2">
+                    {subscriptionStatus}
+                  </Badge>
+                  <p className="text-sm text-muted-foreground">
+                    You're subscribed and staying secure!
+                  </p>
+                </div>
+              ) : (
+                <NewsletterSignup compact />
+              )}
             </div>
           </div>
         </div>
