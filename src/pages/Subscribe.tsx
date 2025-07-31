@@ -37,22 +37,6 @@ export default function Subscribe() {
       ],
       badge: "Recommended"
     },
-    {
-      id: "enterprise",
-      name: "Enterprise",
-      price: "Custom",
-      description: "Complete security intelligence",
-      features: [
-        "Real-time threat alerts",
-        "Custom intelligence reports",
-        "Dedicated account manager",
-        "API access",
-        "Custom integrations",
-        "Team collaboration tools",
-        "24/7 support"
-      ],
-      badge: "Enterprise"
-    }
   ];
 
   const benefits = [
@@ -151,7 +135,7 @@ export default function Subscribe() {
             Select the level of cybersecurity intelligence that fits your needs
           </p>
           
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {plans.map((plan) => (
               <Card 
                 key={plan.id} 
@@ -188,7 +172,7 @@ export default function Subscribe() {
                     className="w-full" 
                     variant={selectedPlan === plan.id ? "default" : "outline"}
                   >
-                    {plan.id === "enterprise" ? "Contact Sales" : "Get Started"}
+                    Get Started
                   </Button>
                 </CardContent>
               </Card>
@@ -237,8 +221,8 @@ export default function Subscribe() {
               <CardContent className="p-6">
                 <h3 className="font-semibold mb-2">How often will I receive updates?</h3>
                 <p className="text-muted-foreground">
-                  Free subscribers receive weekly digests and breaking alerts. Pro subscribers get daily briefings, 
-                  and Enterprise customers receive real-time notifications.
+                  Free subscribers receive weekly digests and breaking alerts. Pro subscribers get daily briefings 
+                  and real-time notifications.
                 </p>
               </CardContent>
             </Card>
