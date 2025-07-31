@@ -24,7 +24,7 @@ export default function Contact() {
     {
       icon: MapPin,
       title: "Headquarters",
-      details: "San Francisco, CA",
+      details: "Bangalore India CyberSecBulletain",
       description: "Global cybersecurity news center"
     },
     {

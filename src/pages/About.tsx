@@ -101,7 +101,6 @@ export default function About() {
         {/* Statistics */}
         <section className="mb-16">
           <div className="bg-gradient-to-r from-primary/5 to-accent/5 rounded-2xl p-8">
-            <h2 className="text-3xl font-bold text-center mb-8">Trusted by Professionals Worldwide</h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               {stats.map((stat, index) => <div key={index} className="text-center">
                   <div className="mx-auto mb-3 p-2 bg-primary/10 rounded-full w-fit">
