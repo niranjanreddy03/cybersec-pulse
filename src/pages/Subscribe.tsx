@@ -1,12 +1,33 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { NewsletterSignup } from "@/components/ui/newsletter-signup";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Mail, Shield, Clock, Users, CheckCircle, Star, Globe } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function Subscribe() {
   const [selectedPlan, setSelectedPlan] = useState<string>("free");
+  const [user, setUser] = useState<any>(null);
+  const [isSubscribed, setIsSubscribed] = useState(false);
+
+  useEffect(() => {
+    // Check if user is logged in
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUser(user);
+    });
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    // Check if user has already subscribed to newsletter (mock check)
+    const hasSubscribed = localStorage.getItem('newsletter_subscribed') === 'true';
+    setIsSubscribed(hasSubscribed);
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const plans = [
     {
@@ -171,8 +192,9 @@ export default function Subscribe() {
                   <Button 
                     className="w-full" 
                     variant={selectedPlan === plan.id ? "default" : "outline"}
+                    disabled={plan.id === "free" && (user || isSubscribed)}
                   >
-                    Get Started
+                    {plan.id === "free" && (user || isSubscribed) ? "Already Subscribed" : "Get Started"}
                   </Button>
                 </CardContent>
               </Card>
@@ -181,14 +203,16 @@ export default function Subscribe() {
         </div>
 
         {/* Newsletter Signup */}
-        <div className="mb-16">
-          <div className="max-w-2xl mx-auto">
-            <NewsletterSignup 
-              title="Start with Free Newsletter"
-              description="Get started with our free cybersecurity newsletter and upgrade anytime."
-            />
+        {!user && !isSubscribed && (
+          <div className="mb-16">
+            <div className="max-w-2xl mx-auto">
+              <NewsletterSignup 
+                title="Start with Free Newsletter"
+                description="Get started with our free cybersecurity newsletter and upgrade anytime."
+              />
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Testimonials */}
         <div className="mb-16">

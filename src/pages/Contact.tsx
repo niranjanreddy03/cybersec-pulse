@@ -17,9 +17,9 @@ export default function Contact() {
     },
     {
       icon: Phone,
-      title: "Emergency Hotline",
-      details: "+1 (555) CYBER-NEWS",
-      description: "24/7 for critical security incidents"
+      title: "Cyber Crime Helpline",
+      details: "1930",
+      description: "Indian Cyber Crime Helpline - 24/7"
     },
     {
       icon: MapPin,

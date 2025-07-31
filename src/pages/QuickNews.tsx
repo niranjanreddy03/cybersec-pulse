@@ -124,25 +124,7 @@ export default function QuickNews() {
 
   useEffect(() => {
     fetchLatestNews();
-    
-    // Set up real-time updates every 30 seconds for breaking news
-    const interval = setInterval(() => {
-      fetchLatestNews(searchTerm || "cybersecurity OR technology");
-    }, 30000);
-    
-    return () => clearInterval(interval);
   }, []);
-
-  // Real-time update when search term changes
-  useEffect(() => {
-    if (searchTerm) {
-      const debounceTimer = setTimeout(() => {
-        fetchLatestNews(searchTerm);
-      }, 1000);
-      
-      return () => clearTimeout(debounceTimer);
-    }
-  }, [searchTerm]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -300,14 +282,6 @@ export default function QuickNews() {
           </div>
         )}
 
-        {/* Auto-refresh notice */}
-        <div className="text-center mt-12">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-muted rounded-lg text-sm text-muted-foreground">
-            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse mr-1"></div>
-            <RefreshCw className="h-4 w-4" />
-            Breaking news updates every 30 seconds
-          </div>
-        </div>
       </div>
     </div>
   );
