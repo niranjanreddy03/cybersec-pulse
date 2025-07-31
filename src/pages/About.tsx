@@ -2,55 +2,53 @@ import { Shield, Users, Award, Globe, TrendingUp, Zap } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-
 export default function About() {
-  const teamMembers = [
-    {
-      name: "Niranjan Reddy",
-      role: "Research Analyst",
-      expertise: "Threat Intelligence, Security Research",
-      experience: "5+ years"
-    },
-    {
-      name: "Deekshith",
-      role: "Editor",
-      expertise: "Content Strategy, Security Analysis",
-      experience: "4+ years"
-    }
-  ];
-
-  const values = [
-    {
-      icon: Shield,
-      title: "Security First",
-      description: "Every article is verified by security experts before publication"
-    },
-    {
-      icon: Zap,
-      title: "Real-Time Updates",
-      description: "Breaking news and critical alerts delivered as they happen"
-    },
-    {
-      icon: Users,
-      title: "Community Driven",
-      description: "Built by security professionals, for security professionals"
-    },
-    {
-      icon: Globe,
-      title: "Global Coverage",
-      description: "Comprehensive coverage of worldwide cybersecurity events"
-    }
-  ];
-
-  const stats = [
-    { label: "Security Professionals", value: "50,000+", icon: Users },
-    { label: "Articles Published", value: "10,000+", icon: Award },
-    { label: "Countries Covered", value: "120+", icon: Globe },
-    { label: "Daily Readers", value: "25,000+", icon: TrendingUp }
-  ];
-
-  return (
-    <div className="min-h-screen bg-background">
+  const teamMembers = [{
+    name: "Niranjan Reddy",
+    role: "Research Analyst",
+    expertise: "Threat Intelligence, Security Research",
+    experience: "5+ years"
+  }, {
+    name: "Deekshith",
+    role: "Editor",
+    expertise: "Content Strategy, Security Analysis",
+    experience: "4+ years"
+  }];
+  const values = [{
+    icon: Shield,
+    title: "Security First",
+    description: "Every article is verified by security experts before publication"
+  }, {
+    icon: Zap,
+    title: "Real-Time Updates",
+    description: "Breaking news and critical alerts delivered as they happen"
+  }, {
+    icon: Users,
+    title: "Community Driven",
+    description: "Built by security professionals, for security professionals"
+  }, {
+    icon: Globe,
+    title: "Global Coverage",
+    description: "Comprehensive coverage of worldwide cybersecurity events"
+  }];
+  const stats = [{
+    label: "Security Professionals",
+    value: "50,000+",
+    icon: Users
+  }, {
+    label: "Articles Published",
+    value: "10,000+",
+    icon: Award
+  }, {
+    label: "Countries Covered",
+    value: "120+",
+    icon: Globe
+  }, {
+    label: "Daily Readers",
+    value: "25,000+",
+    icon: TrendingUp
+  }];
+  return <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-primary/10 to-accent/5 border-b">
         <div className="container mx-auto px-4 py-16">
@@ -86,8 +84,7 @@ export default function About() {
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {values.map((value, index) => (
-              <Card key={index} className="text-center hover:shadow-card transition-all">
+            {values.map((value, index) => <Card key={index} className="text-center hover:shadow-card transition-all">
                 <CardHeader>
                   <div className="mx-auto mb-4 p-3 bg-primary/10 rounded-full w-fit">
                     <value.icon className="h-6 w-6 text-primary" />
@@ -97,8 +94,7 @@ export default function About() {
                 <CardContent>
                   <p className="text-sm text-muted-foreground">{value.description}</p>
                 </CardContent>
-              </Card>
-            ))}
+              </Card>)}
           </div>
         </section>
 
@@ -107,15 +103,13 @@ export default function About() {
           <div className="bg-gradient-to-r from-primary/5 to-accent/5 rounded-2xl p-8">
             <h2 className="text-3xl font-bold text-center mb-8">Trusted by Professionals Worldwide</h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {stats.map((stat, index) => (
-                <div key={index} className="text-center">
+              {stats.map((stat, index) => <div key={index} className="text-center">
                   <div className="mx-auto mb-3 p-2 bg-primary/10 rounded-full w-fit">
                     <stat.icon className="h-5 w-5 text-primary" />
                   </div>
                   <div className="text-3xl font-bold text-primary mb-1">{stat.value}</div>
                   <div className="text-sm text-muted-foreground">{stat.label}</div>
-                </div>
-              ))}
+                </div>)}
             </div>
           </div>
         </section>
@@ -131,8 +125,7 @@ export default function About() {
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {teamMembers.map((member, index) => (
-              <Card key={index} className="hover:shadow-card transition-all">
+            {teamMembers.map((member, index) => <Card key={index} className="hover:shadow-card transition-all">
                 <CardHeader className="text-center">
                   <div className="w-16 h-16 bg-gradient-to-br from-primary to-accent rounded-full mx-auto mb-4 flex items-center justify-center">
                     <Users className="h-8 w-8 text-white" />
@@ -146,8 +139,7 @@ export default function About() {
                     {member.experience}
                   </Badge>
                 </CardContent>
-              </Card>
-            ))}
+              </Card>)}
           </div>
         </section>
 
@@ -226,12 +218,11 @@ export default function About() {
             <Button size="lg" variant="secondary">
               Subscribe to Newsletter
             </Button>
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-primary">
+            <Button size="lg" variant="outline" className="border-white hover:bg-white text-zinc-950">
               Contact Editorial Team
             </Button>
           </div>
         </section>
       </div>
-    </div>
-  );
+    </div>;
 }
