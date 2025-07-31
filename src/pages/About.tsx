@@ -6,28 +6,16 @@ import { Button } from "@/components/ui/button";
 export default function About() {
   const teamMembers = [
     {
-      name: "Sarah Johnson",
-      role: "Chief Security Editor",
-      expertise: "Threat Intelligence, Incident Response",
-      experience: "15+ years"
+      name: "Niranjan Reddy",
+      role: "Research Analyst",
+      expertise: "Threat Intelligence, Security Research",
+      experience: "5+ years"
     },
     {
-      name: "Michael Chen",
-      role: "Technology Editor",
-      expertise: "AI/ML Security, Cloud Infrastructure",
-      experience: "12+ years"
-    },
-    {
-      name: "Dr. Lisa Wang",
-      role: "Research Director",
-      expertise: "Cryptography, Quantum Security",
-      experience: "20+ years"
-    },
-    {
-      name: "Alex Parker",
-      role: "Cybersecurity Analyst",
-      expertise: "Social Engineering, OSINT",
-      experience: "8+ years"
+      name: "Deekshith",
+      role: "Editor",
+      expertise: "Content Strategy, Security Analysis",
+      experience: "4+ years"
     }
   ];
 
@@ -77,9 +65,9 @@ export default function About() {
               stay ahead of emerging threats and industry developments.
             </p>
             <div className="flex flex-wrap justify-center gap-3">
-              <Badge variant="outline" className="text-sm px-4 py-2">Established 2020</Badge>
-              <Badge variant="outline" className="text-sm px-4 py-2">Industry Leading</Badge>
-              <Badge variant="outline" className="text-sm px-4 py-2">Expert Verified</Badge>
+              <Badge variant="outline" className="text-sm px-4 py-2">Established 2025</Badge>
+              <Badge variant="outline" className="text-sm px-4 py-2">Bangalore India</Badge>
+              <Badge variant="outline" className="text-sm px-4 py-2">CyberSecBulletain</Badge>
             </div>
           </div>
         </div>
