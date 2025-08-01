@@ -84,7 +84,19 @@ export default function About() {
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {values.map((value, index) => {})}
+            {values.map((value, index) => (
+              <Card key={index} className="text-center hover:shadow-card transition-all">
+                <CardHeader>
+                  <div className="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-lg mx-auto mb-4 flex items-center justify-center">
+                    <value.icon className="h-6 w-6 text-white" />
+                  </div>
+                  <CardTitle className="text-lg">{value.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">{value.description}</p>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </section>
 
