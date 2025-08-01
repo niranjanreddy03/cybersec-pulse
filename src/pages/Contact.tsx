@@ -6,8 +6,44 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Contact() {
+  const { toast } = useToast();
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    organization: "",
+    department: "",
+    subject: "",
+    message: ""
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Simulate form submission
+    toast({
+      title: "Message Sent Successfully!",
+      description: "We'll get back to you within 24 hours.",
+    });
+    // Reset form
+    setFormData({
+      firstName: "",
+      lastName: "",
+      email: "",
+      organization: "",
+      department: "",
+      subject: "",
+      message: ""
+    });
+  };
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
   const contactInfo = [
     {
       icon: Mail,
@@ -116,74 +152,108 @@ export default function Contact() {
                   Fill out the form below and we'll get back to you within 24 hours.
                 </p>
               </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="grid md:grid-cols-2 gap-4">
+              <CardContent>
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="firstName">First Name *</Label>
+                      <Input 
+                        id="firstName" 
+                        placeholder="Your first name" 
+                        value={formData.firstName}
+                        onChange={(e) => handleInputChange("firstName", e.target.value)}
+                        required 
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="lastName">Last Name *</Label>
+                      <Input 
+                        id="lastName" 
+                        placeholder="Your last name" 
+                        value={formData.lastName}
+                        onChange={(e) => handleInputChange("lastName", e.target.value)}
+                        required 
+                      />
+                    </div>
+                  </div>
+
                   <div>
-                    <Label htmlFor="firstName">First Name *</Label>
-                    <Input id="firstName" placeholder="Your first name" required />
+                    <Label htmlFor="email">Email Address *</Label>
+                    <Input 
+                      id="email" 
+                      type="email" 
+                      placeholder="your.email@company.com" 
+                      value={formData.email}
+                      onChange={(e) => handleInputChange("email", e.target.value)}
+                      required 
+                    />
                   </div>
+
                   <div>
-                    <Label htmlFor="lastName">Last Name *</Label>
-                    <Input id="lastName" placeholder="Your last name" required />
+                    <Label htmlFor="organization">Organization</Label>
+                    <Input 
+                      id="organization" 
+                      placeholder="Your company or organization" 
+                      value={formData.organization}
+                      onChange={(e) => handleInputChange("organization", e.target.value)}
+                    />
                   </div>
-                </div>
 
-                <div>
-                  <Label htmlFor="email">Email Address *</Label>
-                  <Input id="email" type="email" placeholder="your.email@company.com" required />
-                </div>
-
-                <div>
-                  <Label htmlFor="organization">Organization</Label>
-                  <Input id="organization" placeholder="Your company or organization" />
-                </div>
-
-                <div>
-                  <Label htmlFor="department">Department</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select department" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {departments.map((dept) => (
-                        <SelectItem key={dept.value} value={dept.value}>
-                          {dept.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <Label htmlFor="subject">Subject *</Label>
-                  <Input id="subject" placeholder="Brief description of your inquiry" required />
-                </div>
-
-                <div>
-                  <Label htmlFor="message">Message *</Label>
-                  <Textarea 
-                    id="message" 
-                    placeholder="Provide details about your inquiry, news tip, or feedback..."
-                    className="min-h-32"
-                    required 
-                  />
-                </div>
-
-                <div className="flex items-start gap-3 p-4 bg-muted/50 rounded-lg">
-                  <Shield className="h-5 w-5 text-primary mt-0.5" />
-                  <div className="text-sm">
-                    <p className="font-medium mb-1">Security Notice</p>
-                    <p className="text-muted-foreground">
-                      For sensitive security information, consider using our secure contact methods. 
-                      Do not include credentials, private keys, or other sensitive data in this form.
-                    </p>
+                  <div>
+                    <Label htmlFor="department">Department</Label>
+                    <Select value={formData.department} onValueChange={(value) => handleInputChange("department", value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select department" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {departments.map((dept) => (
+                          <SelectItem key={dept.value} value={dept.value}>
+                            {dept.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
-                </div>
 
-                <Button className="w-full" size="lg">
-                  <Send className="h-4 w-4 mr-2" />
-                  Send Message
-                </Button>
+                  <div>
+                    <Label htmlFor="subject">Subject *</Label>
+                    <Input 
+                      id="subject" 
+                      placeholder="Brief description of your inquiry" 
+                      value={formData.subject}
+                      onChange={(e) => handleInputChange("subject", e.target.value)}
+                      required 
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="message">Message *</Label>
+                    <Textarea 
+                      id="message" 
+                      placeholder="Provide details about your inquiry, news tip, or feedback..."
+                      className="min-h-32"
+                      value={formData.message}
+                      onChange={(e) => handleInputChange("message", e.target.value)}
+                      required 
+                    />
+                  </div>
+
+                  <div className="flex items-start gap-3 p-4 bg-muted/50 rounded-lg">
+                    <Shield className="h-5 w-5 text-primary mt-0.5" />
+                    <div className="text-sm">
+                      <p className="font-medium mb-1">Security Notice</p>
+                      <p className="text-muted-foreground">
+                        For sensitive security information, consider using our secure contact methods. 
+                        Do not include credentials, private keys, or other sensitive data in this form.
+                      </p>
+                    </div>
+                  </div>
+
+                  <Button type="submit" className="w-full" size="lg">
+                    <Send className="h-4 w-4 mr-2" />
+                    Send Message
+                  </Button>
+                </form>
               </CardContent>
             </Card>
           </div>

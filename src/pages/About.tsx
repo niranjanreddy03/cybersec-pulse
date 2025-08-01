@@ -2,7 +2,9 @@ import { Shield, Users, Award, Globe, TrendingUp, Zap } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 export default function About() {
+  const navigate = useNavigate();
   const teamMembers = [{
     name: "Niranjan Reddy",
     role: "Research Analyst",
@@ -206,10 +208,10 @@ export default function About() {
             Connect with cybersecurity professionals and stay informed about the latest threats
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" variant="secondary">
+            <Button size="lg" variant="secondary" onClick={() => navigate('/subscribe')}>
               Subscribe to Newsletter
             </Button>
-            <Button size="lg" variant="outline" className="border-white hover:bg-white text-zinc-950">
+            <Button size="lg" variant="outline" className="border-white hover:bg-white text-zinc-950" onClick={() => navigate('/contact')}>
               Contact Editorial Team
             </Button>
           </div>
