@@ -136,7 +136,17 @@ export default function Contact() {
                   For immediate reporting of zero-day vulnerabilities, active breaches, 
                   or other critical security incidents that require urgent public awareness.
                 </p>
-                <Button className="bg-cyber-critical hover:bg-cyber-critical/90 text-white">
+                <Button 
+                  className="bg-cyber-critical hover:bg-cyber-critical/90 text-white"
+                  onClick={() => {
+                    handleInputChange("department", "technical");
+                    handleInputChange("subject", "CRITICAL SECURITY INCIDENT");
+                    toast({
+                      title: "Critical Incident Form Ready",
+                      description: "Please fill out the form below with incident details.",
+                    });
+                  }}
+                >
                   Report Critical Incident
                 </Button>
               </CardContent>
