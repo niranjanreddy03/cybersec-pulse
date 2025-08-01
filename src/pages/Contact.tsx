@@ -259,50 +259,6 @@ export default function Contact() {
           </div>
         </div>
 
-        {/* Additional Information */}
-        <div className="mt-16 grid md:grid-cols-3 gap-8">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">News Tips</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground mb-4">
-                Have a cybersecurity story or breaking news? Send us your tips securely.
-              </p>
-              <Button variant="outline" size="sm" onClick={() => handleInputChange("department", "tips")}>
-                Submit News Tip
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Press Inquiries</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground mb-4">
-                Media professionals seeking expert commentary or interviews.
-              </p>
-              <Button variant="outline" size="sm" onClick={() => handleInputChange("department", "editorial")}>
-                Press Contact
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Partnerships</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground mb-4">
-                Interested in collaborating or forming strategic partnerships?
-              </p>
-              <Button variant="outline" size="sm" onClick={() => handleInputChange("department", "partnership")}>
-                Partnership Inquiry
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
       </div>
     </div>
   );
