@@ -269,7 +269,7 @@ export default function Contact() {
               <p className="text-sm text-muted-foreground mb-4">
                 Have a cybersecurity story or breaking news? Send us your tips securely.
               </p>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" onClick={() => handleInputChange("department", "tips")}>
                 Submit News Tip
               </Button>
             </CardContent>
@@ -283,7 +283,7 @@ export default function Contact() {
               <p className="text-sm text-muted-foreground mb-4">
                 Media professionals seeking expert commentary or interviews.
               </p>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" onClick={() => handleInputChange("department", "editorial")}>
                 Press Contact
               </Button>
             </CardContent>
@@ -297,7 +297,7 @@ export default function Contact() {
               <p className="text-sm text-muted-foreground mb-4">
                 Interested in collaborating or forming strategic partnerships?
               </p>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" onClick={() => handleInputChange("department", "partnership")}>
                 Partnership Inquiry
               </Button>
             </CardContent>
