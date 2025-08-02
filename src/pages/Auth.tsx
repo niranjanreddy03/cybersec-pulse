@@ -253,7 +253,7 @@ export default function Auth() {
                   <Label>Security Verification</Label>
                   <ReCAPTCHA
                     ref={recaptchaRef}
-                    sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" // Test site key - replace with your actual key
+                    sitekey="6Les05YrAAAAAAmp8G6Dt0XW2Ac1aDJnxbA47ZJK"
                     onChange={handleCaptchaChange}
                     theme="light"
                     className="w-full flex justify-center"
