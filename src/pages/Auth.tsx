@@ -8,17 +8,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Shield, Mail, Lock, User } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import ReCAPTCHA from "react-google-recaptcha";
+
 
 export default function Auth() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
-  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  
   const navigate = useNavigate();
   const { toast } = useToast();
-  const recaptchaRef = useRef<ReCAPTCHA>(null);
+  
 
   useEffect(() => {
     // Check if user is already logged in
@@ -33,15 +33,6 @@ export default function Auth() {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!captchaToken) {
-      toast({
-        title: "Captcha verification required",
-        description: "Please complete the captcha verification.",
-        variant: "destructive",
-      });
-      return;
-    }
 
     setLoading(true);
 
@@ -63,11 +54,6 @@ export default function Auth() {
           description: error.message,
           variant: "destructive",
         });
-        // Reset captcha on error
-        if (recaptchaRef.current) {
-          recaptchaRef.current.reset();
-          setCaptchaToken(null);
-        }
       } else {
         toast({
           title: "Check your email",
@@ -77,10 +63,6 @@ export default function Auth() {
         setEmail("");
         setPassword("");
         setName("");
-        setCaptchaToken(null);
-        if (recaptchaRef.current) {
-          recaptchaRef.current.reset();
-        }
       }
     } catch (error) {
       toast({
@@ -88,19 +70,11 @@ export default function Auth() {
         description: "Please try again later.",
         variant: "destructive",
       });
-      // Reset captcha on error
-      if (recaptchaRef.current) {
-        recaptchaRef.current.reset();
-        setCaptchaToken(null);
-      }
     } finally {
       setLoading(false);
     }
   };
 
-  const handleCaptchaChange = (token: string | null) => {
-    setCaptchaToken(token);
-  };
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -249,18 +223,7 @@ export default function Auth() {
                   </div>
                 </div>
                 
-                <div className="space-y-2">
-                  <Label>Security Verification</Label>
-                  <ReCAPTCHA
-                    ref={recaptchaRef}
-                    sitekey="6Les05YrAAAAAAmp8G6Dt0XW2Ac1aDJnxbA47ZJK"
-                    onChange={handleCaptchaChange}
-                    theme="light"
-                    className="w-full flex justify-center"
-                  />
-                </div>
-                
-                <Button type="submit" className="w-full" disabled={loading || !captchaToken}>
+                <Button type="submit" className="w-full" disabled={loading}>
                   {loading ? "Creating account..." : "Sign Up"}
                 </Button>
               </form>
