@@ -5,98 +5,63 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Cpu, Search, Filter, Plus } from "lucide-react";
-
-// Mock tech articles
-const mockTechArticles: Article[] = [
-  {
-    id: "tech-1",
-    title: "AI-Powered Threat Detection Systems Show 99% Accuracy Rate",
-    excerpt: "New machine learning algorithms are revolutionizing cybersecurity defense mechanisms with unprecedented accuracy rates in detecting advanced persistent threats.",
-    author: "Michael Chen",
-    publishedAt: "2024-01-29T08:15:00Z",
-    category: "tech",
-    tags: ["AI", "Machine Learning", "Threat Detection", "Innovation"],
-    priority: "high",
-    imageUrl: "/placeholder.svg"
-  },
-  {
-    id: "tech-2",
-    title: "Major Cloud Provider Enhances Security Infrastructure",
-    excerpt: "Leading cloud service provider announces comprehensive security upgrades following recent industry trends and customer feedback.",
-    author: "Emily Rodriguez",
-    publishedAt: "2024-01-29T06:45:00Z",
-    category: "tech",
-    tags: ["Cloud Security", "Infrastructure", "Updates", "Enterprise"],
-    priority: "medium",
-    imageUrl: "/placeholder.svg"
-  },
-  {
-    id: "tech-3",
-    title: "New Quantum Encryption Standard Approved",
-    excerpt: "International cybersecurity consortium approves new quantum-resistant encryption protocols for enterprise use, marking a milestone in post-quantum cryptography.",
-    author: "Dr. Lisa Wang",
-    publishedAt: "2024-01-28T14:10:00Z",
-    category: "tech",
-    tags: ["Quantum", "Encryption", "Standards", "Cryptography"],
-    priority: "medium",
-    imageUrl: "/placeholder.svg"
-  },
-  {
-    id: "tech-4",
-    title: "5G Network Security Protocols Updated",
-    excerpt: "Telecommunications industry implements enhanced security measures for 5G infrastructure to address emerging vulnerabilities.",
-    author: "Robert Kim",
-    publishedAt: "2024-01-28T11:30:00Z",
-    category: "tech",
-    tags: ["5G", "Network Security", "Telecommunications", "Infrastructure"],
-    priority: "medium",
-    imageUrl: "/placeholder.svg"
-  },
-  {
-    id: "tech-5",
-    title: "Blockchain Technology Revolutionizes Identity Management",
-    excerpt: "New blockchain-based identity verification systems promise to eliminate data breaches and provide users with complete control over their digital identities.",
-    author: "Amanda Foster",
-    publishedAt: "2024-01-27T16:20:00Z",
-    category: "tech",
-    tags: ["Blockchain", "Identity Management", "Privacy", "Innovation"],
-    priority: "low",
-    imageUrl: "/placeholder.svg"
-  },
-  {
-    id: "tech-6",
-    title: "IoT Security Framework Gains Industry Adoption",
-    excerpt: "Major manufacturers commit to implementing standardized security framework for Internet of Things devices across all product lines.",
-    author: "Jennifer Taylor",
-    publishedAt: "2024-01-27T09:45:00Z",
-    category: "tech",
-    tags: ["IoT", "Security Framework", "Standards", "Manufacturing"],
-    priority: "medium",
-    imageUrl: "/placeholder.svg"
-  }
-];
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 export default function TechNews() {
+  const { toast } = useToast();
+  const navigate = useNavigate();
   const [articles, setArticles] = useState<Article[]>([]);
   const [filteredArticles, setFilteredArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("date");
   const [filterBy, setFilterBy] = useState("all");
-  const [isAdmin] = useState(false); // In real app, this would come from auth context
+
+  const fetchTechArticles = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('articles')
+        .select('*')
+        .eq('published', true)
+        .eq('category', 'technology')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      // Convert database articles to Article interface format
+      const convertedArticles: Article[] = (data || []).map(dbArticle => ({
+        id: dbArticle.id,
+        title: dbArticle.title,
+        excerpt: dbArticle.excerpt || dbArticle.content.substring(0, 150) + '...',
+        author: dbArticle.author_name,
+        publishedAt: dbArticle.published_at || dbArticle.created_at,
+        category: "tech" as const,
+        tags: dbArticle.tags || [],
+        priority: (dbArticle.priority as "high" | "low" | "critical" | "medium") || "medium",
+        featured: dbArticle.featured,
+        imageUrl: dbArticle.image_url,
+        content: dbArticle.content,
+        url: `/article/${dbArticle.id}`
+      }));
+
+      setArticles(convertedArticles);
+      setFilteredArticles(convertedArticles);
+    } catch (error) {
+      console.error('Error fetching tech articles:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch tech articles",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    // Simulate API call to WordPress for tech articles
-    const fetchTechArticles = async () => {
-      setLoading(true);
-      // In real app: const articles = await fetchFromWordPress({ category: "tech" });
-      setTimeout(() => {
-        setArticles(mockTechArticles);
-        setFilteredArticles(mockTechArticles);
-        setLoading(false);
-      }, 1000);
-    };
-
     fetchTechArticles();
   }, []);
 
@@ -135,13 +100,11 @@ export default function TechNews() {
   }, [articles, searchTerm, sortBy, filterBy]);
 
   const handleReadMore = (id: string) => {
-    // Navigate to article detail page
-    window.location.href = `/article/${id}`;
+    navigate(`/article/${id}`);
   };
 
   const handleAddArticle = () => {
-    console.log("Open add article form");
-    // In real app: open WordPress-compatible article editor
+    navigate("/admin");
   };
 
   if (loading) {
@@ -176,12 +139,10 @@ export default function TechNews() {
                 <Badge variant="secondary">IoT Security</Badge>
               </div>
             </div>
-            {isAdmin && (
-              <Button onClick={handleAddArticle} className="hidden md:flex">
-                <Plus className="h-4 w-4 mr-2" />
-                Add Article
-              </Button>
-            )}
+            <Button onClick={handleAddArticle} className="hidden md:flex">
+              <Plus className="h-4 w-4 mr-2" />
+              Manage Articles
+            </Button>
           </div>
         </div>
       </div>
@@ -227,14 +188,12 @@ export default function TechNews() {
         </div>
 
         {/* Mobile Add Article Button */}
-        {isAdmin && (
-          <div className="md:hidden mb-6">
-            <Button onClick={handleAddArticle} className="w-full">
-              <Plus className="h-4 w-4 mr-2" />
-              Add New Article
-            </Button>
-          </div>
-        )}
+        <div className="md:hidden mb-6">
+          <Button onClick={handleAddArticle} className="w-full">
+            <Plus className="h-4 w-4 mr-2" />
+            Manage Articles
+          </Button>
+        </div>
 
         {/* Results */}
         <div className="mb-6">
@@ -277,8 +236,8 @@ export default function TechNews() {
         {/* Load More */}
         {filteredArticles.length > 0 && (
           <div className="text-center mt-12">
-            <Button variant="outline" size="lg">
-              Load More Articles
+            <Button variant="outline" size="lg" onClick={fetchTechArticles}>
+              Refresh Articles
             </Button>
           </div>
         )}
