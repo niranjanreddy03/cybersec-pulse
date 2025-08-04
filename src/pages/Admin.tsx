@@ -36,6 +36,8 @@ export default function Admin() {
   const [editingArticle, setEditingArticle] = useState<Article | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [userRole, setUserRole] = useState<string | null>(null);
+  const [checkingAuth, setCheckingAuth] = useState(true);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -71,9 +73,44 @@ export default function Admin() {
     }
   };
 
+  const checkUserRole = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        setCheckingAuth(false);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', session.user.id)
+        .single();
+
+      if (error) {
+        console.error('Error fetching user role:', error);
+        setUserRole(null);
+      } else {
+        setUserRole(data?.role || null);
+      }
+    } catch (error) {
+      console.error('Error checking user role:', error);
+      setUserRole(null);
+    } finally {
+      setCheckingAuth(false);
+    }
+  };
+
   useEffect(() => {
-    fetchArticles();
+    checkUserRole();
   }, []);
+
+  useEffect(() => {
+    if (userRole === 'admin') {
+      fetchArticles();
+    }
+  }, [userRole]);
 
   const handleImageUpload = async (file: File) => {
     setUploading(true);
@@ -230,12 +267,36 @@ export default function Admin() {
     });
   };
 
-  if (loading) {
+  if (checkingAuth || loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background to-background/80 flex items-center justify-center">
         <div className="text-center">
           <FileText className="h-12 w-12 mx-auto mb-4 animate-spin" />
-          <p className="text-muted-foreground">Loading admin panel...</p>
+          <p className="text-muted-foreground">
+            {checkingAuth ? 'Checking permissions...' : 'Loading admin panel...'}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (userRole !== 'admin') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background to-background/80 flex items-center justify-center">
+        <div className="text-center">
+          <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-8 max-w-md">
+            <FileText className="h-12 w-12 mx-auto mb-4 text-destructive" />
+            <h2 className="text-2xl font-bold mb-2 text-destructive">Access Denied</h2>
+            <p className="text-muted-foreground mb-4">
+              You need admin privileges to access this page.
+            </p>
+            <Button 
+              variant="outline" 
+              onClick={() => window.history.back()}
+            >
+              Go Back
+            </Button>
+          </div>
         </div>
       </div>
     );

@@ -1,17 +1,18 @@
 import { useState } from "react";
-import { Menu, X, Shield, User, LogIn, UserPlus } from "lucide-react";
+import { Menu, X, Shield, User, LogIn, UserPlus, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { NavLink } from "react-router-dom";
 
 interface NavigationProps {
   isAuthenticated?: boolean;
+  userRole?: string | null;
   onLoginClick?: () => void;
   onSignupClick?: () => void;
   onLogoutClick?: () => void;
 }
 
-export function Navigation({ isAuthenticated = false, onLoginClick, onSignupClick, onLogoutClick }: NavigationProps) {
+export function Navigation({ isAuthenticated = false, userRole, onLoginClick, onSignupClick, onLogoutClick }: NavigationProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const navItems = [
@@ -56,6 +57,14 @@ export function Navigation({ isAuthenticated = false, onLoginClick, onSignupClic
         <div className="hidden md:flex items-center space-x-2">
           {isAuthenticated ? (
             <div className="flex items-center space-x-2">
+              {userRole === 'admin' && (
+                <NavLink to="/admin">
+                  <Button variant="ghost" size="sm">
+                    <Settings className="h-4 w-4 mr-2" />
+                    Admin
+                  </Button>
+                </NavLink>
+              )}
               <NavLink to="/profile">
                 <Button variant="ghost" size="sm">
                   <User className="h-4 w-4 mr-2" />
@@ -122,6 +131,14 @@ export function Navigation({ isAuthenticated = false, onLoginClick, onSignupClic
               <div className="pt-4 border-t">
                 {isAuthenticated ? (
                   <div className="space-y-2">
+                    {userRole === 'admin' && (
+                      <NavLink to="/admin" onClick={() => setIsOpen(false)}>
+                        <Button variant="ghost" className="w-full justify-start">
+                          <Settings className="h-4 w-4 mr-2" />
+                          Admin
+                        </Button>
+                      </NavLink>
+                    )}
                     <NavLink to="/profile" onClick={() => setIsOpen(false)}>
                       <Button variant="ghost" className="w-full justify-start">
                         <User className="h-4 w-4 mr-2" />
