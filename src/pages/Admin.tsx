@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ArticleImageManager } from "@/components/ui/article-image-manager";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Plus, Edit, Trash2, Upload, Save, Eye, FileText } from "lucide-react";
@@ -275,6 +276,7 @@ export default function Admin() {
           <p className="text-muted-foreground">
             {checkingAuth ? 'Checking permissions...' : 'Loading admin panel...'}
           </p>
+          
         </div>
       </div>
     );
@@ -317,8 +319,9 @@ export default function Admin() {
         </div>
 
         <Tabs defaultValue="articles" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="articles">All Articles ({articles.length})</TabsTrigger>
+            <TabsTrigger value="images">Image Manager</TabsTrigger>
             <TabsTrigger value="editor">
               {isCreating ? (editingArticle ? 'Edit Article' : 'Create Article') : 'Article Editor'}
             </TabsTrigger>
@@ -365,6 +368,10 @@ export default function Admin() {
                 </Card>
               ))}
             </div>
+          </TabsContent>
+
+          <TabsContent value="images">
+            <ArticleImageManager />
           </TabsContent>
 
           <TabsContent value="editor">
