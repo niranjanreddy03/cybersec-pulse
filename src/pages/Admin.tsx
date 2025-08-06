@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArticleImageManager } from "@/components/ui/article-image-manager";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Plus, Edit, Trash2, Upload, Save, Eye, FileText } from "lucide-react";
+import { Plus, Edit, Trash2, Upload, Save, Eye, FileText, LogIn } from "lucide-react";
 
 interface Article {
   id: string;
@@ -32,6 +33,7 @@ interface Article {
 
 export default function Admin() {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingArticle, setEditingArticle] = useState<Article | null>(null);
@@ -101,6 +103,10 @@ export default function Admin() {
     } finally {
       setCheckingAuth(false);
     }
+  };
+
+  const handleLoginRedirect = () => {
+    navigate('/auth');
   };
 
   useEffect(() => {
@@ -290,14 +296,22 @@ export default function Admin() {
             <FileText className="h-12 w-12 mx-auto mb-4 text-destructive" />
             <h2 className="text-2xl font-bold mb-2 text-destructive">Access Denied</h2>
             <p className="text-muted-foreground mb-4">
-              You need admin privileges to access this page.
+              You need admin privileges to access this page. Please log in with an admin account.
             </p>
-            <Button 
-              variant="outline" 
-              onClick={() => window.history.back()}
-            >
-              Go Back
-            </Button>
+            <div className="flex gap-2">
+              <Button 
+                variant="outline" 
+                onClick={() => window.history.back()}
+              >
+                Go Back
+              </Button>
+              <Button 
+                onClick={handleLoginRedirect}
+              >
+                <LogIn className="h-4 w-4 mr-2" />
+                Login
+              </Button>
+            </div>
           </div>
         </div>
       </div>
