@@ -7,7 +7,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Shield, Mail, User as UserIcon, Calendar } from "lucide-react";
+import { NewsletterSignup } from "@/components/ui/newsletter-signup";
+import { Badge } from "@/components/ui/badge";
+import { Shield, Mail, User as UserIcon, Calendar, Bell, BellOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export default function Profile() {
@@ -15,6 +17,8 @@ export default function Profile() {
   const [fullName, setFullName] = useState("");
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
+  const [newsletterSubscription, setNewsletterSubscription] = useState<any>(null);
+  const [checkingSubscription, setCheckingSubscription] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -30,10 +34,61 @@ export default function Profile() {
       setUser(session.user);
       setFullName(session.user.user_metadata?.full_name || "");
       setLoading(false);
+
+      // Check newsletter subscription status
+      await checkNewsletterSubscription(session.user.email);
     };
 
     getUser();
   }, [navigate]);
+
+  const checkNewsletterSubscription = async (email?: string) => {
+    if (!email) return;
+    
+    setCheckingSubscription(true);
+    try {
+      const { data, error } = await supabase
+        .from('newsletter_subscriptions')
+        .select('*')
+        .eq('email', email)
+        .eq('active', true)
+        .maybeSingle();
+
+      if (!error && data) {
+        setNewsletterSubscription(data);
+      }
+    } catch (error) {
+      console.error('Error checking newsletter subscription:', error);
+    } finally {
+      setCheckingSubscription(false);
+    }
+  };
+
+  const handleUnsubscribe = async () => {
+    if (!newsletterSubscription || !user?.email) return;
+
+    try {
+      const { error } = await supabase
+        .from('newsletter_subscriptions')
+        .update({ active: false })
+        .eq('email', user.email);
+
+      if (error) throw error;
+
+      setNewsletterSubscription(null);
+      toast({
+        title: "Unsubscribed",
+        description: "You've been unsubscribed from our newsletter.",
+      });
+    } catch (error) {
+      console.error('Error unsubscribing:', error);
+      toast({
+        title: "Error",
+        description: "Failed to unsubscribe. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
 
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -170,6 +225,57 @@ export default function Profile() {
                   {updating ? "Updating..." : "Update Profile"}
                 </Button>
               </form>
+            </div>
+
+            {/* Newsletter Subscription */}
+            <div className="space-y-4 pt-4 border-t">
+              <h3 className="text-lg font-semibold">Newsletter Subscription</h3>
+              
+              {checkingSubscription ? (
+                <div className="flex items-center space-x-2 text-muted-foreground">
+                  <div className="h-4 w-4 animate-spin border-2 border-primary border-t-transparent rounded-full" />
+                  <span className="text-sm">Checking subscription status...</span>
+                </div>
+              ) : newsletterSubscription ? (
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-3 p-3 bg-primary/10 rounded-lg border">
+                    <Bell className="h-4 w-4 text-primary" />
+                    <div className="flex-1">
+                      <Label className="text-sm font-medium text-primary">Newsletter Subscribed</Label>
+                      <p className="text-xs text-muted-foreground">
+                        Subscribed on {new Date(newsletterSubscription.subscribed_at).toLocaleDateString()}
+                      </p>
+                    </div>
+                    <Badge variant="secondary">Active</Badge>
+                  </div>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={handleUnsubscribe}
+                    className="w-full"
+                  >
+                    <BellOff className="h-4 w-4 mr-2" />
+                    Unsubscribe
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-3 p-3 bg-muted rounded-lg">
+                    <BellOff className="h-4 w-4 text-muted-foreground" />
+                    <div>
+                      <Label className="text-sm font-medium">Newsletter Not Subscribed</Label>
+                      <p className="text-xs text-muted-foreground">
+                        Stay updated with the latest cybersecurity news
+                      </p>
+                    </div>
+                  </div>
+                  <NewsletterSignup 
+                    compact
+                    title="Subscribe to Newsletter"
+                    description="Get the latest updates delivered to your inbox"
+                  />
+                </div>
+              )}
             </div>
 
             {/* Account Actions */}

@@ -2,6 +2,7 @@ import { Shield, Users, Award, Globe, TrendingUp, Zap } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { NewsletterSignup } from "@/components/ui/newsletter-signup";
 import { useNavigate } from "react-router-dom";
 export default function About() {
   const navigate = useNavigate();
@@ -198,6 +199,16 @@ export default function About() {
                 </div>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* Newsletter Signup */}
+        <section className="mb-16">
+          <div className="max-w-2xl mx-auto">
+            <NewsletterSignup 
+              title="Stay Informed"
+              description="Get the latest cybersecurity and technology news delivered directly to your inbox."
+            />
           </div>
         </section>
 
