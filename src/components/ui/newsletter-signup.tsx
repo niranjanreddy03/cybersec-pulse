@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Mail, Check, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface NewsletterSignupProps {
   className?: string;
@@ -37,21 +38,52 @@ export function NewsletterSignup({
 
     setIsLoading(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubscribed(true);
-      setIsLoading(false);
-      toast({
-        title: "Successfully Subscribed!",
-        description: `We'll send updates to ${email}`,
-      });
+    try {
+      // Get current user if authenticated
+      const { data: { user } } = await supabase.auth.getUser();
       
-      // Reset after showing success state
-      setTimeout(() => {
-        setIsSubscribed(false);
-        setEmail("");
-      }, 3000);
-    }, 1000);
+      // Insert newsletter subscription
+      const { error } = await supabase
+        .from('newsletter_subscriptions')
+        .insert({
+          email,
+          user_id: user?.id || null
+        });
+
+      if (error) {
+        // Check if it's a duplicate email error
+        if (error.code === '23505') {
+          toast({
+            title: "Already Subscribed",
+            description: "This email is already subscribed to our newsletter.",
+            variant: "destructive",
+          });
+        } else {
+          throw error;
+        }
+      } else {
+        setIsSubscribed(true);
+        toast({
+          title: "Successfully Subscribed!",
+          description: `We'll send updates to ${email}`,
+        });
+        
+        // Reset after showing success state
+        setTimeout(() => {
+          setIsSubscribed(false);
+          setEmail("");
+        }, 3000);
+      }
+    } catch (error) {
+      console.error('Newsletter subscription error:', error);
+      toast({
+        title: "Subscription Failed",
+        description: "Unable to subscribe. Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (compact && isSubscribed) {
