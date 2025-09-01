@@ -8,78 +8,71 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Cybersecurity Professional Theme */
-    --background: 0 0% 99%;
-    --foreground: 215 25% 15%;
+    /* Dark Cybersecurity Theme */
+    --background: 215 28% 8%;
+    --foreground: 210 40% 95%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 215 25% 15%;
+    --card: 215 28% 10%;
+    --card-foreground: 210 40% 95%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 15%;
+    --popover: 215 28% 10%;
+    --popover-foreground: 210 40% 95%;
 
     /* Primary: Deep Cyber Blue */
-    --primary: 215 85% 25%;
-    --primary-foreground: 0 0% 98%;
-    --primary-hover: 215 85% 30%;
+    --primary: 215 85% 45%;
+    --primary-foreground: 215 28% 8%;
+    --primary-hover: 215 85% 55%;
 
     /* Secondary: Professional Steel */
-    --secondary: 215 15% 92%;
-    --secondary-foreground: 215 25% 25%;
+    --secondary: 215 20% 18%;
+    --secondary-foreground: 210 40% 85%;
 
-    --muted: 215 15% 95%;
-    --muted-foreground: 215 10% 45%;
+    --muted: 215 20% 15%;
+    --muted-foreground: 215 15% 65%;
 
     /* Accent: Cyber Green for highlights */
-    --accent: 145 70% 35%;
-    --accent-foreground: 0 0% 98%;
-    --accent-hover: 145 70% 40%;
+    --accent: 145 70% 55%;
+    --accent-foreground: 215 28% 8%;
+    --accent-hover: 145 70% 65%;
 
     /* Alert/Warning colors */
-    --warning: 45 90% 55%;
-    --warning-foreground: 215 25% 15%;
+    --warning: 45 90% 65%;
+    --warning-foreground: 215 28% 8%;
     
-    --destructive: 0 75% 50%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 0 75% 60%;
+    --destructive-foreground: 210 40% 95%;
 
-    --border: 215 15% 88%;
-    --input: 215 15% 88%;
-    --ring: 215 85% 25%;
+    --border: 215 20% 20%;
+    --input: 215 20% 18%;
+    --ring: 215 85% 45%;
 
     /* Cyber-specific colors */
-    --cyber-critical: 0 75% 50%;
-    --cyber-high: 25 85% 55%;
-    --cyber-medium: 45 90% 55%;
-    --cyber-low: 145 70% 45%;
-    --cyber-info: 215 85% 55%;
+    --cyber-critical: 0 75% 60%;
+    --cyber-high: 25 85% 65%;
+    --cyber-medium: 45 90% 65%;
+    --cyber-low: 145 70% 55%;
+    --cyber-info: 215 85% 65%;
 
     /* Gradients */
-    --gradient-cyber: linear-gradient(135deg, hsl(215 85% 25%), hsl(145 70% 35%));
-    --gradient-tech: linear-gradient(135deg, hsl(215 85% 25%), hsl(215 85% 35%));
-    --gradient-hero: linear-gradient(135deg, hsl(215 85% 15%) 0%, hsl(215 85% 25%) 50%, hsl(145 70% 25%) 100%);
+    --gradient-cyber: linear-gradient(135deg, hsl(215 85% 35%), hsl(145 70% 45%));
+    --gradient-tech: linear-gradient(135deg, hsl(215 85% 35%), hsl(215 85% 45%));
+    --gradient-hero: linear-gradient(135deg, hsl(215 28% 8%) 0%, hsl(215 85% 25%) 50%, hsl(145 70% 35%) 100%);
 
     /* Shadows */
-    --shadow-cyber: 0 4px 20px -4px hsl(215 85% 25% / 0.25);
-    --shadow-card: 0 2px 10px -2px hsl(215 15% 25% / 0.1);
-    --shadow-elevated: 0 8px 30px -8px hsl(215 85% 25% / 0.3);
+    --shadow-cyber: 0 4px 20px -4px hsl(215 85% 15% / 0.4);
+    --shadow-card: 0 2px 10px -2px hsl(215 20% 10% / 0.3);
+    --shadow-elevated: 0 8px 30px -8px hsl(215 85% 15% / 0.5);
 
     --radius: 0.75rem;
 
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 215 28% 10%;
+    --sidebar-foreground: 210 40% 90%;
+    --sidebar-primary: 215 85% 45%;
+    --sidebar-primary-foreground: 215 28% 8%;
+    --sidebar-accent: 215 20% 18%;
+    --sidebar-accent-foreground: 210 40% 90%;
+    --sidebar-border: 215 20% 20%;
+    --sidebar-ring: 215 85% 45%;
   }
 
   .dark {
