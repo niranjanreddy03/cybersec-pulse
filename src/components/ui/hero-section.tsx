@@ -1,8 +1,22 @@
 import { Shield, TrendingUp, Clock, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import heroImage from "@/assets/cyber-hero-bg.jpg";
 export function HeroSection() {
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubscribeClick = async () => {
+    setIsLoading(true);
+    // Add a small delay for better UX
+    setTimeout(() => {
+      navigate('/subscribe');
+      setIsLoading(false);
+    }, 300);
+  };
+
   return <section className="relative overflow-hidden">
       {/* Background with overlay */}
       <div className="absolute inset-0">
@@ -35,8 +49,14 @@ export function HeroSection() {
           
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 mb-12">
-            <Button size="lg" variant="outline" onClick={() => window.location.href = '/subscribe'} className="border-white hover:bg-white text-zinc-950">
-              Subscribe for Updates
+            <Button 
+              size="lg" 
+              variant="outline" 
+              onClick={handleSubscribeClick} 
+              disabled={isLoading}
+              className="border-white hover:bg-white hover:text-primary text-white transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-white/25 disabled:opacity-70 disabled:cursor-not-allowed"
+            >
+              {isLoading ? "Loading..." : "Subscribe for Updates"}
             </Button>
           </div>
           
