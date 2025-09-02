@@ -35,12 +35,7 @@ export function HeroSection() {
           
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 mb-12">
-            <Button 
-              size="lg" 
-              variant="outline" 
-              className="border-white hover:bg-white text-zinc-950"
-              onClick={() => window.location.href = '/subscribe'}
-            >
+            <Button size="lg" variant="outline" onClick={() => window.location.href = '/subscribe'} className="border-white hover:bg-white text-zinc-950">
               Subscribe for Updates
             </Button>
           </div>
