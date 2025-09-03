@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Zap, Search, RefreshCw, Globe, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 // Mock API response structure
 interface NewsAPIResponse {
@@ -45,76 +46,44 @@ export default function QuickNews() {
     content: apiArticle.content
   });
 
-  // Mock news API call (replace with real API when ready)
+  // Fetch news from NewsAPI via edge function
   const fetchLatestNews = async (query: string = "cybersecurity OR technology") => {
     try {
       setLoading(true);
       
-      // Simulate API call with mock data
-      const mockApiResponse: NewsAPIResponse = {
-        status: "ok",
-        totalResults: 100,
-        articles: [
-          {
-            source: { id: "techcrunch", name: "TechCrunch" },
-            author: "Sarah Johnson",
-            title: "New AI-Powered Cybersecurity Platform Detects Threats in Real-Time",
-            description: "Revolutionary AI system demonstrates 99.7% accuracy in detecting sophisticated cyber threats across enterprise networks.",
-            url: "https://example.com/ai-cybersecurity",
-            urlToImage: "/placeholder.svg",
-            publishedAt: new Date().toISOString(),
-            content: "A breakthrough AI-powered cybersecurity platform has been unveiled..."
-          },
-          {
-            source: { id: "wired", name: "Wired" },
-            author: "Michael Chen",
-            title: "Critical Vulnerability Found in Popular Cloud Infrastructure",
-            description: "Security researchers discover zero-day exploit affecting millions of cloud deployments worldwide.",
-            url: "https://example.com/cloud-vulnerability",
-            urlToImage: "/placeholder.svg",
-            publishedAt: new Date(Date.now() - 3600000).toISOString(),
-            content: "A critical security vulnerability has been discovered..."
-          },
-          {
-            source: { id: "reuters", name: "Reuters" },
-            author: "Emily Rodriguez",
-            title: "Global Ransomware Attacks Surge 40% in Q4 2024",
-            description: "Latest cybersecurity report reveals alarming increase in ransomware incidents targeting healthcare and finance sectors.",
-            url: "https://example.com/ransomware-surge",
-            urlToImage: "/placeholder.svg",
-            publishedAt: new Date(Date.now() - 7200000).toISOString(),
-            content: "Ransomware attacks have surged dramatically..."
-          },
-          {
-            source: { id: "ars-technica", name: "Ars Technica" },
-            author: "David Kim",
-            title: "Quantum Computing Breakthrough Threatens Current Encryption",
-            description: "Scientists achieve quantum computing milestone that could render current encryption methods obsolete within a decade.",
-            url: "https://example.com/quantum-encryption",
-            urlToImage: "/placeholder.svg",
-            publishedAt: new Date(Date.now() - 10800000).toISOString(),
-            content: "A major breakthrough in quantum computing..."
-          }
-        ]
-      };
+      // Call our edge function to fetch news
+      const { data, error } = await supabase.functions.invoke('fetch-news', {
+        body: { 
+          query: query.trim() || "cybersecurity OR technology",
+          pageSize: 20 
+        }
+      });
 
-      // Convert mock data to our format
-      const convertedArticles = mockApiResponse.articles.map((article, index) => 
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      // Convert API data to our format
+      const convertedArticles = data.articles?.map((article: NewsAPIResponse['articles'][0], index: number) => 
         convertToArticle(article, index)
-      );
+      ) || [];
 
       setArticles(convertedArticles);
       setLastUpdated(new Date());
       
       toast({
         title: "News Updated",
-        description: `Fetched ${convertedArticles.length} latest articles`,
+        description: `Fetched ${convertedArticles.length} live articles from NewsAPI`,
       });
     } catch (error) {
       console.error("Error fetching news:", error);
       toast({
         title: "Error",
-        description: "Failed to fetch latest news. Using cached articles.",
+        description: "Failed to fetch latest news from NewsAPI. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -243,10 +212,10 @@ export default function QuickNews() {
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                 <span className="text-sm">Connected to news sources</span>
               </div>
-              <Badge variant="secondary">Mock API Active</Badge>
+              <Badge variant="secondary">NewsAPI Connected</Badge>
             </div>
             <p className="text-sm text-muted-foreground mt-2">
-              Integration ready for live news APIs like NewsAPI, Guardian, or custom feeds
+              Live news feed powered by NewsAPI - Real-time cybersecurity and technology updates
             </p>
           </CardContent>
         </Card>
