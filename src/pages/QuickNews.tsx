@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Zap, Search, RefreshCw, Globe, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { NewsCategoryFilter, NewsCategorySelect, newsCategories } from "@/components/ui/news-category-filter";
 
 // Mock API response structure
 interface NewsAPIResponse {
@@ -28,6 +29,7 @@ export default function QuickNews() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
   const { toast } = useToast();
 
@@ -47,14 +49,15 @@ export default function QuickNews() {
   });
 
   // Fetch news from NewsAPI via edge function
-  const fetchLatestNews = async (query: string = "cybersecurity OR technology") => {
+  const fetchLatestNews = async (query: string = "", category: string = "all") => {
     try {
       setLoading(true);
       
       // Call our edge function to fetch news
       const { data, error } = await supabase.functions.invoke('fetch-news', {
         body: { 
-          query: query.trim() || "cybersecurity OR technology",
+          query: query.trim(),
+          category: category,
           pageSize: 20 
         }
       });
@@ -92,18 +95,20 @@ export default function QuickNews() {
   };
 
   useEffect(() => {
-    fetchLatestNews();
-  }, []);
+    fetchLatestNews("", selectedCategory);
+  }, [selectedCategory]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (searchTerm.trim()) {
-      fetchLatestNews(searchTerm);
-    }
+    fetchLatestNews(searchTerm, selectedCategory);
   };
 
   const handleRefresh = () => {
-    fetchLatestNews(searchTerm || "cybersecurity OR technology");
+    fetchLatestNews(searchTerm, selectedCategory);
+  };
+
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category);
   };
 
   const handleReadMore = (id: string) => {
@@ -155,12 +160,22 @@ export default function QuickNews() {
             </Button>
           </div>
           
+          <div className="mb-6">
+            <h3 className="text-sm font-medium mb-3 text-muted-foreground">News Categories</h3>
+            <NewsCategoryFilter 
+              selectedCategory={selectedCategory}
+              onCategoryChange={handleCategoryChange}
+            />
+          </div>
+          
           <div className="flex flex-wrap gap-2 mb-4">
             <Badge variant="secondary" className="bg-primary/10 text-primary">
               <Globe className="h-3 w-3 mr-1" />
               Live Feed
             </Badge>
-            <Badge variant="outline">Breaking News</Badge>
+            <Badge variant="outline">
+              {newsCategories.find(cat => cat.id === selectedCategory)?.name || 'All Categories'}
+            </Badge>
             <Badge variant="outline">Real-time Updates</Badge>
           </div>
 
@@ -173,12 +188,12 @@ export default function QuickNews() {
       <div className="container mx-auto px-4 py-8">
         {/* Search and Stats */}
         <div className="grid lg:grid-cols-4 gap-6 mb-8">
-          <div className="lg:col-span-3">
+          <div className="lg:col-span-2">
             <form onSubmit={handleSearch} className="flex gap-2">
               <div className="flex-1 relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Search breaking news..."
+                  placeholder={`Search ${newsCategories.find(cat => cat.id === selectedCategory)?.name.toLowerCase()} news...`}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10"
@@ -188,6 +203,13 @@ export default function QuickNews() {
                 {loading ? <RefreshCw className="h-4 w-4 animate-spin" /> : "Search"}
               </Button>
             </form>
+          </div>
+          
+          <div>
+            <NewsCategorySelect 
+              selectedCategory={selectedCategory}
+              onCategoryChange={handleCategoryChange}
+            />
           </div>
           
           <Card>

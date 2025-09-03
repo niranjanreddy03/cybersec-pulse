@@ -27,7 +27,20 @@ serve(async (req) => {
   }
 
   try {
-    const { query = 'cybersecurity OR technology', pageSize = 20 } = await req.json();
+    const { query = 'cybersecurity OR technology', pageSize = 20, category = 'all' } = await req.json();
+    
+    // Define category-specific queries
+    const categoryQueries = {
+      'cybersecurity': 'cybersecurity OR "cyber security" OR hacking OR malware OR ransomware OR "data breach"',
+      'technology': 'technology OR "artificial intelligence" OR AI OR "machine learning" OR software OR hardware',
+      'business': 'business OR startup OR "venture capital" OR IPO OR merger OR acquisition',
+      'science': 'science OR research OR discovery OR breakthrough OR innovation OR study',
+      'health': 'health OR medical OR healthcare OR medicine OR pharmaceutical OR "clinical trial"',
+      'finance': 'finance OR banking OR cryptocurrency OR bitcoin OR "financial technology" OR fintech',
+      'all': query
+    };
+    
+    const searchQuery = categoryQueries[category as keyof typeof categoryQueries] || query;
     
     const newsApiKey = Deno.env.get('NEWS_API_KEY');
     if (!newsApiKey) {
@@ -36,7 +49,7 @@ serve(async (req) => {
 
     // Construct NewsAPI URL
     const newsApiUrl = new URL('https://newsapi.org/v2/everything');
-    newsApiUrl.searchParams.append('q', query);
+    newsApiUrl.searchParams.append('q', searchQuery);
     newsApiUrl.searchParams.append('pageSize', pageSize.toString());
     newsApiUrl.searchParams.append('sortBy', 'publishedAt');
     newsApiUrl.searchParams.append('language', 'en');
