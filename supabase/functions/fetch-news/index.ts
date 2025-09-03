@@ -27,7 +27,7 @@ serve(async (req) => {
   }
 
   try {
-    const { query = 'cybersecurity OR technology', pageSize = 20, category = 'all' } = await req.json();
+    const { query = '', pageSize = 20, category = 'all' } = await req.json();
     
     // Define category-specific queries
     const categoryQueries = {
@@ -37,10 +37,20 @@ serve(async (req) => {
       'science': 'science OR research OR discovery OR breakthrough OR innovation OR study',
       'health': 'health OR medical OR healthcare OR medicine OR pharmaceutical OR "clinical trial"',
       'finance': 'finance OR banking OR cryptocurrency OR bitcoin OR "financial technology" OR fintech',
-      'all': query
+      'all': 'technology OR cybersecurity OR business OR science OR health OR finance'
     };
     
-    const searchQuery = categoryQueries[category as keyof typeof categoryQueries] || query;
+    // Use category query or user's custom query, ensuring we always have a valid search term
+    let searchQuery = categoryQueries[category as keyof typeof categoryQueries];
+    
+    // If user provided a custom search and we're not in 'all' category, combine them
+    if (query.trim() && category !== 'all') {
+      searchQuery = `(${searchQuery}) AND (${query.trim()})`;
+    } else if (query.trim() && category === 'all') {
+      searchQuery = query.trim();
+    }
+    
+    console.log('Using search query:', searchQuery);
     
     const newsApiKey = Deno.env.get('NEWS_API_KEY');
     if (!newsApiKey) {
