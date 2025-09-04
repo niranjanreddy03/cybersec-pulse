@@ -87,8 +87,7 @@ export default function About() {
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {values.map((value, index) => (
-              <Card key={index} className="text-center hover:shadow-card transition-all">
+            {values.map((value, index) => <Card key={index} className="text-center hover:shadow-card transition-all">
                 <CardHeader>
                   <div className="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-lg mx-auto mb-4 flex items-center justify-center">
                     <value.icon className="h-6 w-6 text-white" />
@@ -98,8 +97,7 @@ export default function About() {
                 <CardContent>
                   <p className="text-sm text-muted-foreground">{value.description}</p>
                 </CardContent>
-              </Card>
-            ))}
+              </Card>)}
           </div>
         </section>
 
@@ -205,10 +203,7 @@ export default function About() {
         {/* Newsletter Signup */}
         <section className="mb-16">
           <div className="max-w-2xl mx-auto">
-            <NewsletterSignup 
-              title="Stay Informed"
-              description="Get the latest cybersecurity and technology news delivered directly to your inbox."
-            />
+            <NewsletterSignup title="Stay Informed" description="Get the latest cybersecurity and technology news delivered directly to your inbox." />
           </div>
         </section>
 
@@ -222,7 +217,7 @@ export default function About() {
             <Button size="lg" variant="secondary" onClick={() => navigate('/subscribe')}>
               Subscribe to Newsletter
             </Button>
-            <Button size="lg" variant="outline" className="border-white hover:bg-white text-zinc-950" onClick={() => navigate('/contact')}>
+            <Button size="lg" variant="outline" onClick={() => navigate('/contact')} className="border-white text-zinc-300 bg-zinc-950 hover:bg-zinc-800">
               Contact Editorial Team
             </Button>
           </div>
