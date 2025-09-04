@@ -217,7 +217,7 @@ export default function About() {
             <Button size="lg" variant="secondary" onClick={() => navigate('/subscribe')}>
               Subscribe to Newsletter
             </Button>
-            <Button size="lg" variant="outline" onClick={() => navigate('/contact')} className="border-white text-zinc-300 bg-zinc-950 hover:bg-zinc-800">
+            <Button size="lg" variant="secondary" onClick={() => navigate('/contact')} className="border-foreground/20 text-foreground bg-background/20 hover:bg-foreground/10 transition-all duration-300 hover:scale-105">
               Contact Editorial Team
             </Button>
           </div>
