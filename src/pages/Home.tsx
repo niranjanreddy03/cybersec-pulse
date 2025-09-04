@@ -357,7 +357,10 @@ export default function Home() {
             </p>
           </div>
           <div className="grid md:grid-cols-2 gap-8">
-            <Card className="group p-8 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border-primary/20 hover:border-primary/40 transition-all duration-300 cursor-pointer hover:shadow-elevated">
+            <Card 
+              className="group p-8 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border-primary/20 hover:border-primary/40 transition-all duration-300 cursor-pointer hover:shadow-elevated"
+              onClick={() => window.location.href = '/cyber-news'}
+            >
               <div className="flex items-start gap-4 mb-6">
                 <div className="p-3 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors">
                   <Shield className="h-10 w-10 text-primary" />
@@ -378,7 +381,10 @@ export default function Home() {
               </div>
             </Card>
             
-            <Card className="group p-8 bg-gradient-to-br from-accent/10 via-accent/5 to-transparent border-accent/20 hover:border-accent/40 transition-all duration-300 cursor-pointer hover:shadow-elevated">
+            <Card 
+              className="group p-8 bg-gradient-to-br from-accent/10 via-accent/5 to-transparent border-accent/20 hover:border-accent/40 transition-all duration-300 cursor-pointer hover:shadow-elevated"
+              onClick={() => window.location.href = '/tech-news'}
+            >
               <div className="flex items-start gap-4 mb-6">
                 <div className="p-3 bg-accent/10 rounded-lg group-hover:bg-accent/20 transition-colors">
                   <TrendingUp className="h-10 w-10 text-accent" />
