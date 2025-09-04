@@ -19,43 +19,53 @@ export default function TechNews() {
   const [sortBy, setSortBy] = useState("date");
   const [filterBy, setFilterBy] = useState("all");
 
+  // Convert NewsAPI response to Article format
+  const convertToArticle = (newsItem: any): Article => ({
+    id: newsItem.url || `article-${Date.now()}-${Math.random()}`,
+    title: newsItem.title || "Untitled",
+    excerpt: newsItem.description || "No description available",
+    author: newsItem.author || newsItem.source?.name || "Unknown",
+    publishedAt: newsItem.publishedAt || new Date().toISOString(),
+    category: "tech" as const,
+    tags: ["Technology", "Innovation", "Development"],
+    priority: "medium" as const,
+    featured: false,
+    imageUrl: newsItem.urlToImage || "/placeholder.svg",
+    content: newsItem.content || newsItem.description || "",
+    url: newsItem.url
+  });
+
   const fetchTechArticles = async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
-        .from('articles')
-        .select('*')
-        .eq('published', true)
-        .eq('category', 'technology')
-        .order('created_at', { ascending: false });
+      
+      const { data, error } = await supabase.functions.invoke('fetch-news', {
+        body: {
+          query: "",
+          category: "technology",
+          pageSize: 20
+        }
+      });
 
       if (error) throw error;
 
-      // Convert database articles to Article interface format
-      const convertedArticles: Article[] = (data || []).map(dbArticle => ({
-        id: dbArticle.id,
-        title: dbArticle.title,
-        excerpt: dbArticle.excerpt || dbArticle.content.substring(0, 150) + '...',
-        author: dbArticle.author_name,
-        publishedAt: dbArticle.published_at || dbArticle.created_at,
-        category: "tech" as const,
-        tags: dbArticle.tags || [],
-        priority: (dbArticle.priority as "high" | "low" | "critical" | "medium") || "medium",
-        featured: dbArticle.featured,
-        imageUrl: dbArticle.image_url,
-        content: dbArticle.content,
-        url: `/article/${dbArticle.id}`
-      }));
-
-      setArticles(convertedArticles);
-      setFilteredArticles(convertedArticles);
+      const newsData = data;
+      if (newsData?.articles) {
+        const convertedArticles = newsData.articles.map(convertToArticle);
+        setArticles(convertedArticles);
+        setFilteredArticles(convertedArticles);
+      } else {
+        throw new Error('No articles received from API');
+      }
     } catch (error) {
       console.error('Error fetching tech articles:', error);
       toast({
         title: "Error",
-        description: "Failed to fetch tech articles",
+        description: "Failed to fetch latest technology news from NewsAPI. Please try again.",
         variant: "destructive"
       });
+      setArticles([]);
+      setFilteredArticles([]);
     } finally {
       setLoading(false);
     }
@@ -100,7 +110,12 @@ export default function TechNews() {
   }, [articles, searchTerm, sortBy, filterBy]);
 
   const handleReadMore = (id: string) => {
-    navigate(`/article/${id}`);
+    // For NewsAPI articles, navigate to external URL
+    if (id.startsWith('http')) {
+      window.open(id, '_blank');
+    } else {
+      navigate(`/article/${id}`);
+    }
   };
 
   const handleAddArticle = () => {

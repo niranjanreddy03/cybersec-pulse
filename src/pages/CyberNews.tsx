@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Shield, Search, Filter, Plus, AlertTriangle } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 // Mock cyber articles
 const mockCyberArticles: Article[] = [
@@ -79,6 +81,7 @@ const mockCyberArticles: Article[] = [
 ];
 
 export default function CyberNews() {
+  const { toast } = useToast();
   const [articles, setArticles] = useState<Article[]>([]);
   const [filteredArticles, setFilteredArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
@@ -87,18 +90,62 @@ export default function CyberNews() {
   const [filterBy, setFilterBy] = useState("all");
   const [isAdmin] = useState(false); // In real app, this would come from auth context
 
-  useEffect(() => {
-    // Simulate API call to WordPress for cyber articles
-    const fetchCyberArticles = async () => {
+  // Convert NewsAPI response to Article format
+  const convertToArticle = (newsItem: any): Article => ({
+    id: newsItem.url || `article-${Date.now()}-${Math.random()}`,
+    title: newsItem.title || "Untitled",
+    excerpt: newsItem.description || "No description available",
+    author: newsItem.author || newsItem.source?.name || "Unknown",
+    publishedAt: newsItem.publishedAt || new Date().toISOString(),
+    category: "cyber" as const,
+    tags: ["Cybersecurity", "Security", "Threat"],
+    priority: "medium" as const,
+    featured: false,
+    imageUrl: newsItem.urlToImage || "/placeholder.svg",
+    content: newsItem.content || newsItem.description || "",
+    url: newsItem.url
+  });
+
+  const fetchCyberArticles = async () => {
+    try {
       setLoading(true);
-      // In real app: const articles = await fetchFromWordPress({ category: "cyber" });
-      setTimeout(() => {
+      
+      const { data, error } = await supabase.functions.invoke('fetch-news', {
+        body: {
+          query: "",
+          category: "cybersecurity",
+          pageSize: 20
+        }
+      });
+
+      if (error) throw error;
+
+      const newsData = data;
+      if (newsData?.articles) {
+        const convertedArticles = newsData.articles.map(convertToArticle);
+        setArticles(convertedArticles);
+        setFilteredArticles(convertedArticles);
+      } else {
+        // Fallback to mock data if API fails
         setArticles(mockCyberArticles);
         setFilteredArticles(mockCyberArticles);
-        setLoading(false);
-      }, 1000);
-    };
+      }
+    } catch (error) {
+      console.error('Error fetching cybersecurity news:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch latest cybersecurity news. Showing cached articles.",
+        variant: "destructive"
+      });
+      // Fallback to mock data
+      setArticles(mockCyberArticles);
+      setFilteredArticles(mockCyberArticles);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchCyberArticles();
   }, []);
 
@@ -141,8 +188,12 @@ export default function CyberNews() {
   }, [articles, searchTerm, sortBy, filterBy]);
 
   const handleReadMore = (id: string) => {
-    // Navigate to article detail page
-    window.location.href = `/article/${id}`;
+    // For NewsAPI articles, navigate to external URL
+    if (id.startsWith('http')) {
+      window.open(id, '_blank');
+    } else {
+      window.location.href = `/article/${id}`;
+    }
   };
 
   const handleAddArticle = () => {
