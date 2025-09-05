@@ -16,6 +16,8 @@ export interface Article {
   priority?: "critical" | "high" | "medium" | "low";
   featured?: boolean;
   url?: string;
+  readTime?: string;
+  views?: number;
 }
 
 interface ArticleCardProps {

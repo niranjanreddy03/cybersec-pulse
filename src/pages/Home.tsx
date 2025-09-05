@@ -145,8 +145,8 @@ export default function Home() {
   const trendingArticles = articles.filter(article => article.priority === "high" || article.priority === "critical").slice(0, 4);
 
   const handleReadMore = (id: string) => {
-    // Navigate to article detail page
-    window.location.href = `/article/${id}`;
+    // Navigate to articles page with specific article
+    window.location.href = `/articles/${id}`;
   };
 
   if (loading) {
@@ -242,8 +242,8 @@ export default function Home() {
                   Fresh cybersecurity news and analysis
                 </p>
               </div>
-              <Button variant="outline" className="group">
-                View All Reports
+              <Button variant="outline" className="group" onClick={() => window.location.href = '/articles'}>
+                View All Articles
                 <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
             </div>

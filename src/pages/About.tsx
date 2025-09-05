@@ -207,7 +207,134 @@ export default function About() {
           </div>
         </section>
 
-        {/* Contact CTA */}
+        {/* Contact Section */}
+        <section className="mb-16">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4">Contact Our Team</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Have a security tip, story idea, or need to reach our editorial team? 
+              We're here to help keep the cybersecurity community informed.
+            </p>
+          </div>
+          
+          <div className="grid lg:grid-cols-2 gap-12">
+            {/* Contact Information */}
+            <div>
+              <h3 className="text-2xl font-bold mb-6">Get in Touch</h3>
+              <div className="space-y-6">
+                <Card className="hover:shadow-card transition-all">
+                  <CardContent className="flex items-start gap-4 p-6">
+                    <div className="bg-primary/10 p-3 rounded-lg">
+                      <Shield className="h-6 w-6 text-primary" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-lg mb-1">Email</h4>
+                      <p className="text-primary font-medium mb-1">info@cybersecbulletain.com</p>
+                      <p className="text-sm text-muted-foreground">For editorial inquiries and news tips</p>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card className="hover:shadow-card transition-all">
+                  <CardContent className="flex items-start gap-4 p-6">
+                    <div className="bg-primary/10 p-3 rounded-lg">
+                      <Users className="h-6 w-6 text-primary" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-lg mb-1">Response Time</h4>
+                      <p className="text-primary font-medium mb-1">&lt; 2 hours</p>
+                      <p className="text-sm text-muted-foreground">For urgent security matters</p>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card className="hover:shadow-card transition-all">
+                  <CardContent className="flex items-start gap-4 p-6">
+                    <div className="bg-primary/10 p-3 rounded-lg">
+                      <Globe className="h-6 w-6 text-primary" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-lg mb-1">Headquarters</h4>
+                      <p className="text-primary font-medium mb-1">Bangalore India</p>
+                      <p className="text-sm text-muted-foreground">Global cybersecurity news center</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+
+            {/* Quick Contact Form */}
+            <div>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-2xl">Send us a Message</CardTitle>
+                  <p className="text-muted-foreground">
+                    Fill out the form below and we'll get back to you within 24 hours.
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  <form className="space-y-4">
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-sm font-medium">First Name *</label>
+                        <input 
+                          type="text"
+                          placeholder="Your first name" 
+                          className="w-full mt-1 px-3 py-2 border border-border rounded-md bg-background"
+                          required 
+                        />
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium">Last Name *</label>
+                        <input 
+                          type="text"
+                          placeholder="Your last name" 
+                          className="w-full mt-1 px-3 py-2 border border-border rounded-md bg-background"
+                          required 
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="text-sm font-medium">Email Address *</label>
+                      <input 
+                        type="email" 
+                        placeholder="your.email@company.com" 
+                        className="w-full mt-1 px-3 py-2 border border-border rounded-md bg-background"
+                        required 
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-sm font-medium">Subject *</label>
+                      <input 
+                        type="text"
+                        placeholder="Brief description of your inquiry" 
+                        className="w-full mt-1 px-3 py-2 border border-border rounded-md bg-background"
+                        required 
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-sm font-medium">Message *</label>
+                      <textarea 
+                        placeholder="Provide details about your inquiry, news tip, or feedback..."
+                        className="w-full mt-1 px-3 py-2 border border-border rounded-md bg-background min-h-32"
+                        required 
+                      />
+                    </div>
+
+                    <Button type="submit" className="w-full" size="lg">
+                      Send Message
+                    </Button>
+                  </form>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
+
+        {/* Join Community CTA */}
         <section className="text-center bg-gradient-to-r from-primary to-accent rounded-2xl p-12 text-white">
           <h2 className="text-3xl font-bold mb-4">Join Our Community</h2>
           <p className="text-lg mb-8 opacity-90">
@@ -217,8 +344,8 @@ export default function About() {
             <Button size="lg" variant="outline" onClick={() => navigate('/subscribe')} className="border-white bg-white/10 text-white hover:bg-white hover:text-primary transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-white/25 active:scale-95">
               Subscribe to Newsletter
             </Button>
-            <Button size="lg" variant="outline" onClick={() => navigate('/contact')} className="border-white bg-white/10 text-white hover:bg-white hover:text-primary transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-white/25 active:scale-95">
-              Contact Editorial Team
+            <Button size="lg" variant="outline" onClick={() => navigate('/articles')} className="border-white bg-white/10 text-white hover:bg-white hover:text-primary transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-white/25 active:scale-95">
+              Read Latest Articles
             </Button>
           </div>
         </section>
