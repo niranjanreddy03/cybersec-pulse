@@ -54,7 +54,7 @@ export function HeroSection() {
               variant="outline" 
               onClick={handleSubscribeClick} 
               disabled={isLoading}
-              className="border-white hover:bg-white hover:text-primary text-white transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-white/25 disabled:opacity-70 disabled:cursor-not-allowed"
+              className="border-accent/60 bg-accent/10 text-accent hover:bg-accent hover:text-accent-foreground transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-accent/25 backdrop-blur-sm disabled:opacity-70 disabled:cursor-not-allowed active:scale-95"
             >
               {isLoading ? "Loading..." : "Subscribe for Updates"}
             </Button>
