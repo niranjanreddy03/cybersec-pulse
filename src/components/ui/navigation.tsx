@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Menu, X, Shield, User, LogIn, UserPlus, Settings } from "lucide-react";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { NavLink } from "react-router-dom";
@@ -56,7 +55,6 @@ export function Navigation({ isAuthenticated = false, userRole, onLoginClick, on
 
         {/* Desktop Auth Buttons - Hidden on mobile */}
         <div className="hidden md:flex items-center space-x-2">
-          <ThemeToggle />
           {isAuthenticated ? (
             <div className="flex items-center space-x-2">
               {userRole === 'admin' && (
@@ -129,13 +127,6 @@ export function Navigation({ isAuthenticated = false, userRole, onLoginClick, on
                 ))}
               </nav>
 
-              {/* Theme Toggle */}
-              <div className="pt-4 border-t">
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-sm font-medium">Theme</span>
-                  <ThemeToggle />
-                </div>
-              </div>
 
               {/* Auth Section */}
               <div className="pt-4 border-t">
