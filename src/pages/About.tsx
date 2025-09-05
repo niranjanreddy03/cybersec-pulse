@@ -214,7 +214,7 @@ export default function About() {
             Connect with cybersecurity professionals and stay informed about the latest threats
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" variant="secondary" onClick={() => navigate('/subscribe')}>
+            <Button size="lg" variant="outline" onClick={() => navigate('/subscribe')} className="border-white bg-white/10 text-white hover:bg-white hover:text-primary transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-white/25 active:scale-95">
               Subscribe to Newsletter
             </Button>
             <Button size="lg" variant="secondary" onClick={() => navigate('/contact')} className="border-foreground/20 text-foreground bg-background/20 hover:bg-foreground/10 transition-all duration-300 hover:scale-105">
