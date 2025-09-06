@@ -8,6 +8,7 @@ import { ThemeProvider } from "@/components/ui/theme-provider";
 import { supabase } from "@/integrations/supabase/client";
 import { Session, User } from "@supabase/supabase-js";
 import { Navigation } from "@/components/ui/navigation";
+import { Footer } from "@/components/ui/footer";
 import Home from "./pages/Home";
 import QuickNews from "./pages/QuickNews";
 import TechNews from "./pages/TechNews";
@@ -19,6 +20,8 @@ import Profile from "./pages/Profile";
 import Admin from "./pages/Admin";
 import ArticleDetail from "./pages/ArticleDetail";
 import Articles from "./pages/Articles";
+import Privacy from "./pages/Privacy";
+import Terms from "./pages/Terms";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -116,9 +119,12 @@ function AppContent() {
         <Route path="/articles" element={<Articles />} />
         <Route path="/articles/:id" element={<Articles />} />
         <Route path="/article/:id" element={<ArticleDetail />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/terms" element={<Terms />} />
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<NotFound />} />
       </Routes>
+      <Footer />
     </div>
   );
 }

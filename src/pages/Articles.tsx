@@ -6,112 +6,75 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArticleCard, Article } from "@/components/ui/article-card";
 import { Separator } from "@/components/ui/separator";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { SEOHead } from "@/components/ui/seo-head";
 
-// Mock articles data - in real app, this would come from WordPress API
-const mockArticles: Article[] = [
-  {
-    id: "1",
-    title: "Critical Zero-Day Vulnerability Discovered in Popular Email Client",
-    excerpt: "Security researchers have identified a severe zero-day vulnerability affecting millions of users worldwide. Immediate patching is recommended.",
-    content: `
-      <h2>Executive Summary</h2>
-      <p>Security researchers at CyberSec Labs have discovered a critical zero-day vulnerability (CVE-2024-0001) in the widely-used email client that affects over 50 million users globally. The vulnerability allows remote code execution through specially crafted email attachments.</p>
-      
-      <h2>Technical Analysis</h2>
-      <p>The vulnerability stems from improper input validation in the attachment parsing mechanism. When a malicious attachment is processed, it can trigger a buffer overflow condition that allows attackers to execute arbitrary code with the privileges of the email client.</p>
-      
-      <h2>Impact Assessment</h2>
-      <ul>
-        <li><strong>Severity:</strong> Critical (CVSS 9.8)</li>
-        <li><strong>Attack Vector:</strong> Network</li>
-        <li><strong>Affected Versions:</strong> 3.0.0 - 3.2.1</li>
-        <li><strong>Exploitation:</strong> Active exploitation detected in the wild</li>
-      </ul>
-      
-      <h2>Mitigation Strategies</h2>
-      <p>Users are strongly advised to:</p>
-      <ol>
-        <li>Update to version 3.2.2 immediately</li>
-        <li>Disable automatic attachment processing</li>
-        <li>Implement email filtering for suspicious attachments</li>
-        <li>Monitor network traffic for anomalous activity</li>
-      </ol>
-      
-      <h2>Timeline</h2>
-      <ul>
-        <li><strong>Discovery:</strong> January 25, 2024</li>
-        <li><strong>Vendor Notification:</strong> January 26, 2024</li>
-        <li><strong>Patch Release:</strong> January 29, 2024</li>
-        <li><strong>Public Disclosure:</strong> January 29, 2024</li>
-      </ul>
-    `,
-    author: "Sarah Johnson",
-    publishedAt: "2024-01-29T10:30:00Z",
-    category: "cyber",
-    tags: ["Zero-Day", "Email Security", "Vulnerability"],
-    priority: "critical",
-    featured: true,
-    imageUrl: "/placeholder.svg",
-    readTime: "8 min read",
-    views: 15420
-  },
-  {
-    id: "2",
-    title: "AI-Powered Threat Detection Systems Show 99% Accuracy Rate",
-    excerpt: "New machine learning algorithms are revolutionizing cybersecurity defense mechanisms with unprecedented accuracy rates.",
-    content: `
-      <h2>Breakthrough in AI Security</h2>
-      <p>Recent advances in machine learning have led to the development of AI-powered threat detection systems that achieve an unprecedented 99% accuracy rate in identifying cyber threats.</p>
-      
-      <h2>Technology Overview</h2>
-      <p>The new systems utilize deep learning neural networks trained on massive datasets of threat patterns, enabling them to identify both known and unknown attack vectors with remarkable precision.</p>
-      
-      <h2>Key Features</h2>
-      <ul>
-        <li>Real-time threat analysis</li>
-        <li>Behavioral anomaly detection</li>
-        <li>Automated response capabilities</li>
-        <li>Continuous learning algorithms</li>
-      </ul>
-      
-      <h2>Industry Impact</h2>
-      <p>These systems represent a significant leap forward in cybersecurity automation, potentially reducing response times from hours to seconds while minimizing false positives.</p>
-    `,
-    author: "Michael Chen",
-    publishedAt: "2024-01-29T08:15:00Z",
-    category: "tech",
-    tags: ["AI", "Machine Learning", "Threat Detection"],
-    priority: "high",
-    imageUrl: "/placeholder.svg",
-    readTime: "6 min read",
-    views: 8732
-  }
-];
-
+// Helper function to convert database article to Article interface
+const convertDbArticle = (dbArticle: any): Article => ({
+  id: dbArticle.id,
+  title: dbArticle.title,
+  excerpt: dbArticle.excerpt || dbArticle.content.substring(0, 200) + '...',
+  content: dbArticle.content,
+  author: dbArticle.author_name,
+  publishedAt: dbArticle.published_at || dbArticle.created_at,
+  category: dbArticle.category === 'cybersecurity' ? 'cyber' : 
+           dbArticle.category === 'technology' ? 'tech' : dbArticle.category,
+  tags: dbArticle.tags || [],
+  priority: dbArticle.priority,
+  featured: dbArticle.featured,
+  imageUrl: dbArticle.image_url || "/placeholder.svg",
+  readTime: `${Math.ceil(dbArticle.content.length / 1000)} min read`,
+  views: Math.floor(Math.random() * 10000) + 1000 // Placeholder views
+});
 export default function Articles() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [article, setArticle] = useState<Article | null>(null);
   const [relatedArticles, setRelatedArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (id) {
-      // Simulate API call to fetch specific article
-      const foundArticle = mockArticles.find(a => a.id === id);
-      setArticle(foundArticle || null);
+  const fetchArticles = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('articles')
+        .select('*')
+        .eq('published', true)
+        .order('published_at', { ascending: false });
+
+      if (error) throw error;
       
-      // Get related articles (same category, excluding current)
-      const related = mockArticles
-        .filter(a => a.id !== id && a.category === foundArticle?.category)
-        .slice(0, 3);
-      setRelatedArticles(related);
-    } else {
-      // Show all articles if no ID provided
-      setArticle(null);
-      setRelatedArticles(mockArticles);
+      const articles = (data || []).map(convertDbArticle);
+      
+      if (id) {
+        const foundArticle = articles.find(a => a.id === id);
+        setArticle(foundArticle || null);
+        
+        // Get related articles (same category, excluding current)
+        const related = articles
+          .filter(a => a.id !== id && a.category === foundArticle?.category)
+          .slice(0, 3);
+        setRelatedArticles(related);
+      } else {
+        // Show all articles if no ID provided
+        setArticle(null);
+        setRelatedArticles(articles);
+      }
+    } catch (error) {
+      console.error('Error fetching articles:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load articles. Please try again later.",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchArticles();
   }, [id]);
 
   const handleReadMore = (articleId: string) => {
@@ -135,32 +98,54 @@ export default function Articles() {
   // Article listing page
   if (!id || !article) {
     return (
-      <div className="min-h-screen bg-background">
-        <div className="container mx-auto px-4 py-16">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold mb-4">Security Intelligence Articles</h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              In-depth analysis, breaking news, and expert insights on cybersecurity and technology trends
-            </p>
-          </div>
-          
-          <div className="grid gap-8">
-            {relatedArticles.map((article) => (
-              <ArticleCard
-                key={article.id}
-                article={article}
-                onReadMore={handleReadMore}
-              />
-            ))}
+      <>
+        <SEOHead
+          title="Cybersecurity Articles & Intelligence Reports"
+          description="Stay ahead of cyber threats with our comprehensive collection of cybersecurity articles, threat intelligence reports, and expert analysis on the latest security trends."
+          keywords={["cybersecurity", "articles", "threat intelligence", "security reports", "cyber threats", "infosec"]}
+          canonicalUrl={`${window.location.origin}/articles`}
+        />
+        <div className="min-h-screen bg-background">
+          <div className="container mx-auto px-4 py-16">
+            <div className="text-center mb-12">
+              <h1 className="text-4xl font-bold mb-4">Security Intelligence Articles</h1>
+              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+                In-depth analysis, breaking news, and expert insights on cybersecurity and technology trends
+              </p>
+            </div>
+            
+            <div className="grid gap-8">
+              {relatedArticles.map((article) => (
+                <ArticleCard
+                  key={article.id}
+                  article={article}
+                  onReadMore={handleReadMore}
+                />
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      </>
     );
   }
 
   // Individual article page
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      <SEOHead
+        title={article.title}
+        description={article.excerpt}
+        keywords={[...article.tags, article.category, "cybersecurity", "security"]}
+        canonicalUrl={`${window.location.origin}/articles/${article.id}`}
+        ogImage={article.imageUrl !== "/placeholder.svg" ? article.imageUrl : undefined}
+        articleData={{
+          author: article.author,
+          publishedTime: article.publishedAt,
+          section: article.category,
+          tags: article.tags
+        }}
+      />
+      <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         {/* Back Button */}
         <Button 
@@ -288,5 +273,6 @@ export default function Articles() {
         </article>
       </div>
     </div>
+    </>
   );
 }
