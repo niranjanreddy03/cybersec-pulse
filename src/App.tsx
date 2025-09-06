@@ -14,7 +14,6 @@ import TechNews from "./pages/TechNews";
 import CyberNews from "./pages/CyberNews";
 import Subscribe from "./pages/Subscribe";
 import About from "./pages/About";
-import Contact from "./pages/Contact";
 import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
 import Admin from "./pages/Admin";
@@ -110,7 +109,7 @@ function AppContent() {
         <Route path="/cyber-news" element={<CyberNews />} />
         <Route path="/subscribe" element={<Subscribe />} />
         <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
+        
         <Route path="/auth" element={<Auth />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/admin" element={<Admin />} />
