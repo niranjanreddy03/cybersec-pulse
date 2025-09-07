@@ -3,16 +3,17 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArticleImageManager } from "@/components/ui/article-image-manager";
+import { RichTextEditor } from "@/components/ui/rich-text-editor";
+import { SEOFields } from "@/components/ui/seo-fields";
+import { PublishingOptions } from "@/components/ui/publishing-options";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Plus, Edit, Trash2, Upload, Save, Eye, FileText, LogIn } from "lucide-react";
+import { Plus, Edit, Trash2, Save, Eye, FileText, LogIn, Settings } from "lucide-react";
 
 interface Article {
   id: string;
@@ -52,7 +53,15 @@ export default function Admin() {
     featured: false,
     published: false,
     image_url: "",
-    author_name: "Admin"
+    author_name: "Admin",
+    seoTitle: "",
+    metaDescription: "",
+    slug: "",
+    keywords: "",
+    status: "draft" as "draft" | "published" | "scheduled",
+    publishDate: "",
+    visibility: "public" as "public" | "private" | "password",
+    password: ""
   });
 
   const fetchArticles = async () => {
@@ -199,7 +208,15 @@ export default function Admin() {
         featured: false,
         published: false,
         image_url: "",
-        author_name: "Admin"
+        author_name: "Admin",
+        seoTitle: "",
+        metaDescription: "",
+        slug: "",
+        keywords: "",
+        status: "draft",
+        publishDate: "",
+        visibility: "public",
+        password: ""
       });
       setEditingArticle(null);
       setIsCreating(false);
@@ -226,7 +243,15 @@ export default function Admin() {
       featured: article.featured,
       published: article.published,
       image_url: article.image_url || "",
-      author_name: article.author_name
+      author_name: article.author_name,
+      seoTitle: article.title,
+      metaDescription: article.excerpt || "",
+      slug: article.title.toLowerCase().replace(/[^a-z0-9 -]/g, '').replace(/\s+/g, '-'),
+      keywords: article.tags.join(', '),
+      status: article.published ? "published" : "draft",
+      publishDate: "",
+      visibility: "public",
+      password: ""
     });
     setIsCreating(true);
   };
@@ -270,7 +295,15 @@ export default function Admin() {
       featured: false,
       published: false,
       image_url: "",
-      author_name: "Admin"
+      author_name: "Admin",
+      seoTitle: "",
+      metaDescription: "",
+      slug: "",
+      keywords: "",
+      status: "draft",
+      publishDate: "",
+      visibility: "public",
+      password: ""
     });
   };
 
@@ -335,9 +368,9 @@ export default function Admin() {
         <Tabs defaultValue="articles" className="w-full">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="articles">All Articles ({articles.length})</TabsTrigger>
-            <TabsTrigger value="images">Image Manager</TabsTrigger>
+            <TabsTrigger value="images">Media Library</TabsTrigger>
             <TabsTrigger value="editor">
-              {isCreating ? (editingArticle ? 'Edit Article' : 'Create Article') : 'Article Editor'}
+              {isCreating ? (editingArticle ? 'Edit Post' : 'New Post') : 'Post Editor'}
             </TabsTrigger>
           </TabsList>
 
@@ -390,165 +423,183 @@ export default function Admin() {
 
           <TabsContent value="editor">
             {isCreating ? (
-              <Card>
-                <CardHeader>
-                  <CardTitle>
-                    {editingArticle ? 'Edit Article' : 'Create New Article'}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="title">Title *</Label>
-                        <Input
-                          id="title"
-                          value={formData.title}
-                          onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-                          required
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="author">Author</Label>
-                        <Input
-                          id="author"
-                          value={formData.author_name}
-                          onChange={(e) => setFormData(prev => ({ ...prev, author_name: e.target.value }))}
-                        />
-                      </div>
-                    </div>
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Main Content Editor */}
+                <div className="lg:col-span-2 space-y-6">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>
+                        {editingArticle ? 'Edit Post' : 'Create New Post'}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <form onSubmit={handleSubmit} className="space-y-6">
+                        <div>
+                          <Label htmlFor="title">Title *</Label>
+                          <Input
+                            id="title"
+                            value={formData.title}
+                            onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                            required
+                            placeholder="Enter post title..."
+                            className="text-lg"
+                          />
+                        </div>
 
-                    <div>
-                      <Label htmlFor="excerpt">Excerpt</Label>
-                      <Textarea
-                        id="excerpt"
-                        value={formData.excerpt}
-                        onChange={(e) => setFormData(prev => ({ ...prev, excerpt: e.target.value }))}
-                        rows={2}
-                        placeholder="Brief description of the article..."
-                      />
-                    </div>
+                        <div>
+                          <Label htmlFor="content">Content *</Label>
+                          <RichTextEditor
+                            value={formData.content}
+                            onChange={(value) => setFormData(prev => ({ ...prev, content: value }))}
+                            placeholder="Write your post content here..."
+                          />
+                        </div>
 
-                    <div>
-                      <Label htmlFor="content">Content *</Label>
-                      <Textarea
-                        id="content"
-                        value={formData.content}
-                        onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
-                        rows={12}
-                        required
-                        placeholder="Write your article content here..."
-                      />
-                    </div>
+                        <div>
+                          <Label htmlFor="excerpt">Excerpt</Label>
+                          <Input
+                            id="excerpt"
+                            value={formData.excerpt}
+                            onChange={(e) => setFormData(prev => ({ ...prev, excerpt: e.target.value }))}
+                            placeholder="Brief description of the post..."
+                          />
+                        </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <div>
-                        <Label htmlFor="category">Category</Label>
-                        <Select value={formData.category} onValueChange={(value) => setFormData(prev => ({ ...prev, category: value }))}>
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="technology">Technology</SelectItem>
-                            <SelectItem value="cybersecurity">Cybersecurity</SelectItem>
-                            <SelectItem value="ai">Artificial Intelligence</SelectItem>
-                            <SelectItem value="blockchain">Blockchain</SelectItem>
-                            <SelectItem value="data-science">Data Science</SelectItem>
-                            <SelectItem value="general">General</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div>
-                        <Label htmlFor="priority">Priority</Label>
-                        <Select value={formData.priority} onValueChange={(value) => setFormData(prev => ({ ...prev, priority: value }))}>
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="low">Low</SelectItem>
-                            <SelectItem value="medium">Medium</SelectItem>
-                            <SelectItem value="high">High</SelectItem>
-                            <SelectItem value="critical">Critical</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div>
-                        <Label htmlFor="tags">Tags (comma separated)</Label>
-                        <Input
-                          id="tags"
-                          value={formData.tags}
-                          onChange={(e) => setFormData(prev => ({ ...prev, tags: e.target.value }))}
-                          placeholder="react, javascript, web development"
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <Label htmlFor="image">Featured Image</Label>
-                      <div className="space-y-4">
-                        <Input
-                          type="file"
-                          accept="image/*"
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) handleImageUpload(file);
-                          }}
-                          disabled={uploading}
-                        />
-                        {formData.image_url && (
-                          <div className="relative w-full max-w-md">
-                            <img 
-                              src={formData.image_url} 
-                              alt="Preview" 
-                              className="w-full h-48 object-cover rounded-lg border"
-                            />
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <Label htmlFor="category">Category</Label>
+                            <Select value={formData.category} onValueChange={(value) => setFormData(prev => ({ ...prev, category: value }))}>
+                              <SelectTrigger>
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="technology">Technology</SelectItem>
+                                <SelectItem value="cybersecurity">Cybersecurity</SelectItem>
+                                <SelectItem value="ai">Artificial Intelligence</SelectItem>
+                                <SelectItem value="blockchain">Blockchain</SelectItem>
+                                <SelectItem value="data-science">Data Science</SelectItem>
+                                <SelectItem value="general">General</SelectItem>
+                              </SelectContent>
+                            </Select>
                           </div>
-                        )}
-                      </div>
-                    </div>
+                          <div>
+                            <Label htmlFor="priority">Priority</Label>
+                            <Select value={formData.priority} onValueChange={(value) => setFormData(prev => ({ ...prev, priority: value }))}>
+                              <SelectTrigger>
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="low">Low</SelectItem>
+                                <SelectItem value="medium">Medium</SelectItem>
+                                <SelectItem value="high">High</SelectItem>
+                                <SelectItem value="critical">Critical</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
 
-                    <div className="flex items-center space-x-6">
-                      <div className="flex items-center space-x-2">
-                        <Switch
-                          id="featured"
-                          checked={formData.featured}
-                          onCheckedChange={(checked) => setFormData(prev => ({ ...prev, featured: checked }))}
-                        />
-                        <Label htmlFor="featured">Featured Article</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Switch
-                          id="published"
-                          checked={formData.published}
-                          onCheckedChange={(checked) => setFormData(prev => ({ ...prev, published: checked }))}
-                        />
-                        <Label htmlFor="published">Publish Now</Label>
-                      </div>
-                    </div>
+                        <div>
+                          <Label htmlFor="tags">Tags</Label>
+                          <Input
+                            id="tags"
+                            value={formData.tags}
+                            onChange={(e) => setFormData(prev => ({ ...prev, tags: e.target.value }))}
+                            placeholder="react, javascript, web development"
+                          />
+                        </div>
 
-                    <div className="flex gap-4">
-                      <Button type="submit" disabled={uploading}>
-                        <Save className="h-4 w-4 mr-2" />
-                        {editingArticle ? 'Update Article' : 'Create Article'}
-                      </Button>
-                      <Button type="button" variant="outline" onClick={() => setIsCreating(false)}>
-                        Cancel
-                      </Button>
-                    </div>
-                  </form>
-                </CardContent>
-              </Card>
+                        <div>
+                          <Label htmlFor="author">Author</Label>
+                          <Input
+                            id="author"
+                            value={formData.author_name}
+                            onChange={(e) => setFormData(prev => ({ ...prev, author_name: e.target.value }))}
+                            placeholder="Author name"
+                          />
+                        </div>
+
+                        <div>
+                          <Label htmlFor="image">Featured Image</Label>
+                          <div className="space-y-4">
+                            <Input
+                              type="file"
+                              accept="image/*"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) handleImageUpload(file);
+                              }}
+                              disabled={uploading}
+                            />
+                            {formData.image_url && (
+                              <div className="relative w-full max-w-md">
+                                <img 
+                                  src={formData.image_url} 
+                                  alt="Preview" 
+                                  className="w-full h-48 object-cover rounded-lg border"
+                                />
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="flex gap-4">
+                          <Button type="submit" disabled={uploading}>
+                            <Save className="h-4 w-4 mr-2" />
+                            {formData.status === 'published' ? 'Publish' : 'Save Draft'}
+                          </Button>
+                          <Button type="button" variant="outline" onClick={() => setIsCreating(false)}>
+                            Cancel
+                          </Button>
+                          {formData.title && (
+                            <Button type="button" variant="outline">
+                              <Eye className="h-4 w-4 mr-2" />
+                              Preview
+                            </Button>
+                          )}
+                        </div>
+                      </form>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Sidebar */}
+                <div className="space-y-6">
+                  <PublishingOptions
+                    status={formData.status}
+                    featured={formData.featured}
+                    publishDate={formData.publishDate}
+                    visibility={formData.visibility}
+                    password={formData.password}
+                    onStatusChange={(status) => setFormData(prev => ({ ...prev, status, published: status === 'published' }))}
+                    onFeaturedChange={(featured) => setFormData(prev => ({ ...prev, featured }))}
+                    onPublishDateChange={(date) => setFormData(prev => ({ ...prev, publishDate: date }))}
+                    onVisibilityChange={(visibility) => setFormData(prev => ({ ...prev, visibility }))}
+                    onPasswordChange={(password) => setFormData(prev => ({ ...prev, password }))}
+                  />
+
+                  <SEOFields
+                    title={formData.seoTitle}
+                    metaDescription={formData.metaDescription}
+                    slug={formData.slug}
+                    keywords={formData.keywords}
+                    onTitleChange={(title) => setFormData(prev => ({ ...prev, seoTitle: title }))}
+                    onMetaDescriptionChange={(desc) => setFormData(prev => ({ ...prev, metaDescription: desc }))}
+                    onSlugChange={(slug) => setFormData(prev => ({ ...prev, slug }))}
+                    onKeywordsChange={(keywords) => setFormData(prev => ({ ...prev, keywords }))}
+                  />
+                </div>
+              </div>
             ) : (
               <Card>
                 <CardContent className="p-12 text-center">
                   <FileText className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
-                  <h3 className="text-lg font-semibold mb-2">Ready to Create Content</h3>
+                  <h3 className="text-lg font-semibold mb-2">WordPress-Style Editor</h3>
                   <p className="text-muted-foreground mb-6">
-                    Use the article editor to create and manage your news content with rich formatting and media support.
+                    Create and manage your content with a rich text editor, SEO optimization, publishing controls, and media management - just like WordPress.
                   </p>
                   <Button onClick={startCreating} size="lg">
                     <Plus className="h-4 w-4 mr-2" />
-                    Create Your First Article
+                    Write New Post
                   </Button>
                 </CardContent>
               </Card>
