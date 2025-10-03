@@ -33,68 +33,7 @@ export function Navigation({ isAuthenticated = false, userRole, onLoginClick, on
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between px-4">
-        {/* Logo and Brand */}
-        <div className="flex items-center space-x-2">
-          <Shield className="h-8 w-8 text-primary" />
-          <span className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-            CyberSecBulletain
-          </span>
-        </div>
-
-        {/* Desktop Navigation - Hidden on mobile */}
-        <nav className="hidden md:flex items-center space-x-6">
-          {navItems.map((item) => (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              className={({ isActive }) =>
-                `text-sm font-medium transition-colors hover:text-primary ${
-                  isActive ? "text-primary" : "text-muted-foreground"
-                }`
-              }
-            >
-              {item.label}
-            </NavLink>
-          ))}
-        </nav>
-
-        {/* Desktop Auth Buttons - Hidden on mobile */}
-        <div className="hidden md:flex items-center space-x-2">
-          {isAuthenticated ? (
-            <div className="flex items-center space-x-2">
-              {userRole === 'admin' && (
-                <NavLink to="/admin">
-                  <Button variant="ghost" size="sm">
-                    <Settings className="h-4 w-4 mr-2" />
-                    Admin
-                  </Button>
-                </NavLink>
-              )}
-              <NavLink to="/profile">
-                <Button variant="ghost" size="sm">
-                  <User className="h-4 w-4 mr-2" />
-                  Profile
-                </Button>
-              </NavLink>
-              <Button variant="outline" size="sm" onClick={onLogoutClick}>
-                Logout
-              </Button>
-            </div>
-          ) : (
-            <div className="flex items-center space-x-2">
-              <Button variant="ghost" size="sm" onClick={onLoginClick}>
-                <LogIn className="h-4 w-4 mr-2" />
-                Login
-              </Button>
-              <Button size="sm" onClick={onSignupClick}>
-                <UserPlus className="h-4 w-4 mr-2" />
-                Sign Up
-              </Button>
-            </div>
-          )}
-        </div>
-
-        {/* Mobile Hamburger Menu */}
+        {/* Mobile Hamburger Menu - On the left */}
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger asChild className="md:hidden">
             <Button variant="ghost" size="sm">
@@ -191,6 +130,67 @@ export function Navigation({ isAuthenticated = false, userRole, onLoginClick, on
             </div>
           </SheetContent>
         </Sheet>
+
+        {/* Desktop Navigation - Hidden on mobile */}
+        <nav className="hidden md:flex items-center space-x-6">
+          {navItems.map((item) => (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              className={({ isActive }) =>
+                `text-sm font-medium transition-colors hover:text-primary ${
+                  isActive ? "text-primary" : "text-muted-foreground"
+                }`
+              }
+            >
+              {item.label}
+            </NavLink>
+          ))}
+        </nav>
+
+        {/* Desktop Auth Buttons - Hidden on mobile */}
+        <div className="hidden md:flex items-center space-x-2">
+          {isAuthenticated ? (
+            <div className="flex items-center space-x-2">
+              {userRole === 'admin' && (
+                <NavLink to="/admin">
+                  <Button variant="ghost" size="sm">
+                    <Settings className="h-4 w-4 mr-2" />
+                    Admin
+                  </Button>
+                </NavLink>
+              )}
+              <NavLink to="/profile">
+                <Button variant="ghost" size="sm">
+                  <User className="h-4 w-4 mr-2" />
+                  Profile
+                </Button>
+              </NavLink>
+              <Button variant="outline" size="sm" onClick={onLogoutClick}>
+                Logout
+              </Button>
+            </div>
+          ) : (
+            <div className="flex items-center space-x-2">
+              <Button variant="ghost" size="sm" onClick={onLoginClick}>
+                <LogIn className="h-4 w-4 mr-2" />
+                Login
+              </Button>
+              <Button size="sm" onClick={onSignupClick}>
+                <UserPlus className="h-4 w-4 mr-2" />
+                Sign Up
+              </Button>
+            </div>
+          )}
+        </div>
+
+        {/* Logo and Brand - On the right for mobile */}
+        <div className="flex items-center space-x-2 md:absolute md:left-4">
+          <Shield className="h-8 w-8 text-primary" />
+          <span className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+            CyberSecBulletain
+          </span>
+        </div>
       </div>
     </header>
   );
