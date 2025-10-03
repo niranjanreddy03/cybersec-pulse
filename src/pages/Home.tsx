@@ -93,7 +93,23 @@ export default function Home() {
       setLoading(true);
       // In real app: const articles = await fetchFromWordPress();
       setTimeout(() => {
-        setArticles(mockArticles);
+        // Sort articles to prioritize cyber news
+        const sortedArticles = [...mockArticles].sort((a, b) => {
+          // Cyber news first
+          if (a.category === 'cyber' && b.category !== 'cyber') return -1;
+          if (a.category !== 'cyber' && b.category === 'cyber') return 1;
+          
+          // Then by priority
+          const priorityOrder = { critical: 0, high: 1, medium: 2, low: 3 };
+          const aPriority = priorityOrder[a.priority as keyof typeof priorityOrder] ?? 2;
+          const bPriority = priorityOrder[b.priority as keyof typeof priorityOrder] ?? 2;
+          if (aPriority !== bPriority) return aPriority - bPriority;
+          
+          // Finally by date
+          return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
+        });
+        
+        setArticles(sortedArticles);
         setLoading(false);
       }, 1000);
     };
@@ -101,7 +117,9 @@ export default function Home() {
     fetchArticles();
   }, []);
 
-  const featuredArticle = articles.find(article => article.featured) || articles[0];
+  // Prioritize cyber news in featured
+  const cyberArticles = articles.filter(a => a.category === 'cyber');
+  const featuredArticle = cyberArticles.find(article => article.featured) || cyberArticles[0] || articles[0];
   const aroundWorldArticles = articles.slice(1, 5);
 
   const handleReadMore = (id: string) => {
@@ -155,16 +173,28 @@ export default function Home() {
           onCategoryChange={setActiveCategory}
         />
 
-        {/* Latest News Section */}
+        {/* Latest News Section - Prioritizing Cyber */}
         <section>
-          <h2 className="text-lg font-bold text-foreground mb-4">Latest news</h2>
+          <div className="flex items-center gap-2 mb-4">
+            <h2 className="text-lg font-bold text-foreground">Latest news</h2>
+            {featuredArticle?.category === 'cyber' && (
+              <span className="text-xs px-2 py-1 bg-destructive/10 text-destructive rounded-full font-semibold">
+                CYBER ALERT
+              </span>
+            )}
+          </div>
           
           {featuredArticle && (
             <Card 
-              className="bg-gradient-to-br from-primary via-primary/90 to-accent text-primary-foreground p-6 cursor-pointer hover:shadow-elevated transition-shadow"
+              className="bg-gradient-to-br from-primary via-primary/90 to-accent text-primary-foreground p-6 cursor-pointer hover:shadow-elevated transition-shadow relative overflow-hidden"
               onClick={() => handleReadMore(featuredArticle.id)}
             >
-              <h3 className="text-xl font-bold mb-4 leading-tight">
+              {featuredArticle.category === 'cyber' && (
+                <div className="absolute top-3 right-3">
+                  <Shield className="h-6 w-6 text-primary-foreground/80" />
+                </div>
+              )}
+              <h3 className="text-xl font-bold mb-4 leading-tight pr-8">
                 {featuredArticle.title}
               </h3>
               <p className="text-sm text-primary-foreground/80">
@@ -197,13 +227,27 @@ export default function Home() {
             {aroundWorldArticles.map((article) => (
               <Card 
                 key={article.id}
-                className="min-w-[180px] flex-shrink-0 overflow-hidden cursor-pointer hover:shadow-elevated transition-shadow"
+                className={`min-w-[180px] flex-shrink-0 overflow-hidden cursor-pointer hover:shadow-elevated transition-shadow ${
+                  article.category === 'cyber' ? 'border-primary/50' : ''
+                }`}
                 onClick={() => handleReadMore(article.id)}
               >
-                <div className="aspect-video bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center">
-                  <Shield className="h-12 w-12 text-muted-foreground/30" />
+                <div className={`aspect-video flex items-center justify-center ${
+                  article.category === 'cyber' 
+                    ? 'bg-gradient-to-br from-primary/20 to-accent/20' 
+                    : 'bg-gradient-to-br from-muted to-muted/50'
+                }`}>
+                  <Shield className={`h-12 w-12 ${
+                    article.category === 'cyber' ? 'text-primary' : 'text-muted-foreground/30'
+                  }`} />
                 </div>
                 <div className="p-3">
+                  {article.category === 'cyber' && (
+                    <div className="flex items-center gap-1 mb-1">
+                      <div className="w-1.5 h-1.5 bg-destructive rounded-full animate-pulse" />
+                      <span className="text-xs text-destructive font-semibold">CYBER</span>
+                    </div>
+                  )}
                   <p className="text-sm font-medium text-foreground line-clamp-2 leading-snug">
                     {article.title.length > 50 ? article.title.substring(0, 50) + '...' : article.title}
                   </p>
@@ -213,21 +257,37 @@ export default function Home() {
           </div>
         </section>
 
-        {/* All Articles Section */}
+        {/* All Articles Section - Cyber prioritized */}
         <section className="space-y-4">
           <h2 className="text-lg font-bold text-foreground">More stories</h2>
           
           {articles.slice(5).map((article) => (
             <Card 
               key={article.id}
-              className="p-4 cursor-pointer hover:shadow-elevated transition-shadow"
+              className={`p-4 cursor-pointer hover:shadow-elevated transition-shadow ${
+                article.category === 'cyber' ? 'border-primary/30 bg-primary/5' : ''
+              }`}
               onClick={() => handleReadMore(article.id)}
             >
               <div className="flex gap-4">
-                <div className="flex-shrink-0 w-20 h-20 bg-gradient-to-br from-muted to-muted/50 rounded flex items-center justify-center">
-                  <Shield className="h-8 w-8 text-muted-foreground/30" />
+                <div className={`flex-shrink-0 w-20 h-20 rounded flex items-center justify-center ${
+                  article.category === 'cyber'
+                    ? 'bg-gradient-to-br from-primary/20 to-accent/20'
+                    : 'bg-gradient-to-br from-muted to-muted/50'
+                }`}>
+                  <Shield className={`h-8 w-8 ${
+                    article.category === 'cyber' ? 'text-primary' : 'text-muted-foreground/30'
+                  }`} />
                 </div>
                 <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    {article.category === 'cyber' && (
+                      <div className="flex items-center gap-1">
+                        <div className="w-1.5 h-1.5 bg-destructive rounded-full animate-pulse" />
+                        <span className="text-xs text-destructive font-semibold">CYBER</span>
+                      </div>
+                    )}
+                  </div>
                   <h3 className="text-sm font-semibold text-foreground mb-1 line-clamp-2">
                     {article.title}
                   </h3>
