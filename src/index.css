@@ -8,32 +8,32 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Dark Cybersecurity Theme */
-    --background: 215 28% 8%;
-    --foreground: 210 40% 95%;
+    /* Dark Cybersecurity Theme - Light mode adjustments */
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%;
 
-    --card: 215 28% 10%;
-    --card-foreground: 210 40% 95%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
 
-    --popover: 215 28% 10%;
-    --popover-foreground: 210 40% 95%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
 
-    /* Primary: Deep Cyber Blue */
-    --primary: 215 85% 45%;
-    --primary-foreground: 215 28% 8%;
-    --primary-hover: 215 85% 55%;
+    /* Primary: Vibrant Purple/Blue */
+    --primary: 253 94% 63%;
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 253 94% 73%;
 
-    /* Secondary: Professional Steel */
-    --secondary: 215 20% 18%;
-    --secondary-foreground: 210 40% 85%;
+    /* Secondary: Light gray */
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
 
-    --muted: 215 20% 15%;
-    --muted-foreground: 215 15% 65%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
 
-    /* Accent: Cyber Green for highlights */
-    --accent: 145 70% 55%;
-    --accent-foreground: 215 28% 8%;
-    --accent-hover: 145 70% 65%;
+    /* Accent: Purple for highlights */
+    --accent: 270 90% 65%;
+    --accent-foreground: 0 0% 100%;
+    --accent-hover: 270 90% 75%;
 
     /* Alert/Warning colors */
     --warning: 45 90% 65%;
@@ -42,9 +42,9 @@ All colors MUST be HSL.
     --destructive: 0 75% 60%;
     --destructive-foreground: 210 40% 95%;
 
-    --border: 215 20% 20%;
-    --input: 215 20% 18%;
-    --ring: 215 85% 45%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 253 94% 63%;
 
     /* Cyber-specific colors */
     --cyber-critical: 0 75% 60%;
@@ -121,5 +121,16 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
   }
 }
