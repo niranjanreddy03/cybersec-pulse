@@ -51,42 +51,42 @@ export default function About() {
     value: "25,000+",
     icon: TrendingUp
   }];
-  return <div className="min-h-screen bg-background">
+  return <div className="min-h-screen bg-background pb-20 md:pb-0">
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-primary/10 to-accent/5 border-b">
-        <div className="container mx-auto px-4 py-16">
+        <div className="container mx-auto px-4 py-8 md:py-16">
           <div className="text-center max-w-4xl mx-auto">
-            <div className="flex items-center justify-center gap-3 mb-6">
-              <Shield className="h-12 w-12 text-primary" />
-              <h1 className="text-5xl font-bold">CyberSecBulletain</h1>
+            <div className="flex items-center justify-center gap-2 md:gap-3 mb-4 md:mb-6">
+              <Shield className="h-8 w-8 md:h-12 md:w-12 text-primary" />
+              <h1 className="text-2xl md:text-5xl font-bold">CyberSecBulletain</h1>
             </div>
-            <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
+            <p className="text-sm md:text-xl text-muted-foreground mb-6 md:mb-8 leading-relaxed px-2">
               Your trusted source for cybersecurity and technology news. We deliver 
               verified, expert-analyzed security intelligence to help professionals 
               stay ahead of emerging threats and industry developments.
             </p>
-            <div className="flex flex-wrap justify-center gap-3">
-              <Badge variant="outline" className="text-sm px-4 py-2">Established 2025</Badge>
-              <Badge variant="outline" className="text-sm px-4 py-2">Bangalore India</Badge>
-              <Badge variant="outline" className="text-sm px-4 py-2">CyberSecBulletain</Badge>
+            <div className="flex flex-wrap justify-center gap-2 md:gap-3">
+              <Badge variant="outline" className="text-xs md:text-sm px-3 md:px-4 py-1 md:py-2">Established 2025</Badge>
+              <Badge variant="outline" className="text-xs md:text-sm px-3 md:px-4 py-1 md:py-2">Bangalore India</Badge>
+              <Badge variant="outline" className="text-xs md:text-sm px-3 md:px-4 py-1 md:py-2">CyberSecBulletain</Badge>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-16">
+      <div className="container mx-auto px-4 py-8 md:py-16">
         {/* Mission Statement */}
-        <section className="mb-16">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Our Mission</h2>
-            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+        <section className="mb-8 md:mb-16">
+          <div className="text-center mb-6 md:mb-12">
+            <h2 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4">Our Mission</h2>
+            <p className="text-sm md:text-lg text-muted-foreground max-w-3xl mx-auto px-2">
               To provide cybersecurity professionals and technology leaders with timely, 
               accurate, and actionable intelligence that enables informed decision-making 
               and proactive threat mitigation.
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             {values.map((value, index) => <Card key={index} className="text-center hover:shadow-card transition-all">
                 <CardHeader>
                   <div className="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-lg mx-auto mb-4 flex items-center justify-center">
@@ -107,16 +107,16 @@ export default function About() {
         </section>
 
         {/* Editorial Team */}
-        <section className="mb-16">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Our Editorial Team</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+        <section className="mb-8 md:mb-16">
+          <div className="text-center mb-6 md:mb-12">
+            <h2 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4">Our Editorial Team</h2>
+            <p className="text-sm md:text-lg text-muted-foreground max-w-2xl mx-auto px-2">
               Our team of seasoned cybersecurity experts and technology journalists 
               ensures every piece of content meets the highest standards of accuracy and relevance.
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             {teamMembers.map((member, index) => <Card key={index} className="hover:shadow-card transition-all">
                 <CardHeader className="text-center">
                   <div className="w-16 h-16 bg-gradient-to-br from-primary to-accent rounded-full mx-auto mb-4 flex items-center justify-center">
@@ -136,10 +136,10 @@ export default function About() {
         </section>
 
         {/* Editorial Standards */}
-        <section className="mb-16">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <section className="mb-8 md:mb-16">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-12 items-center">
             <div>
-              <h2 className="text-3xl font-bold mb-6">Editorial Standards</h2>
+              <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6">Editorial Standards</h2>
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
                   <div className="bg-accent/20 p-1 rounded-full mt-1">
@@ -176,8 +176,8 @@ export default function About() {
                 </div>
               </div>
             </div>
-            <div className="bg-gradient-to-br from-primary/10 to-accent/10 p-8 rounded-2xl">
-              <h3 className="text-xl font-bold mb-4">Content Categories</h3>
+            <div className="bg-gradient-to-br from-primary/10 to-accent/10 p-4 md:p-8 rounded-2xl">
+              <h3 className="text-lg md:text-xl font-bold mb-3 md:mb-4">Content Categories</h3>
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
                   <span className="text-sm">Threat Intelligence</span>
@@ -208,19 +208,19 @@ export default function About() {
         </section>
 
         {/* Contact Section */}
-        <section className="mb-16">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Contact Our Team</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+        <section className="mb-8 md:mb-16">
+          <div className="text-center mb-6 md:mb-12">
+            <h2 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4">Contact Our Team</h2>
+            <p className="text-sm md:text-lg text-muted-foreground max-w-2xl mx-auto px-2">
               Have a security tip, story idea, or need to reach our editorial team? 
               We're here to help keep the cybersecurity community informed.
             </p>
           </div>
           
-          <div className="grid lg:grid-cols-2 gap-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-12">
             {/* Contact Information */}
             <div>
-              <h3 className="text-2xl font-bold mb-6">Get in Touch</h3>
+              <h3 className="text-xl md:text-2xl font-bold mb-4 md:mb-6">Get in Touch</h3>
               <div className="space-y-6">
                 <Card className="hover:shadow-card transition-all">
                   <CardContent className="flex items-start gap-4 p-6">
@@ -274,7 +274,7 @@ export default function About() {
                 </CardHeader>
                 <CardContent>
                   <form className="space-y-4">
-                    <div className="grid md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
                         <label className="text-sm font-medium">First Name *</label>
                         <input 
@@ -335,12 +335,12 @@ export default function About() {
         </section>
 
         {/* Join Community CTA */}
-        <section className="text-center bg-gradient-to-r from-primary to-accent rounded-2xl p-12 text-white">
-          <h2 className="text-3xl font-bold mb-4">Join Our Community</h2>
-          <p className="text-lg mb-8 opacity-90">
+        <section className="text-center bg-gradient-to-r from-primary to-accent rounded-2xl p-6 md:p-12 text-white">
+          <h2 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4">Join Our Community</h2>
+          <p className="text-sm md:text-lg mb-6 md:mb-8 opacity-90">
             Connect with cybersecurity professionals and stay informed about the latest threats
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col gap-3 md:gap-4 justify-center">
             <Button size="lg" variant="outline" onClick={() => navigate('/subscribe')} className="border-white bg-white/10 text-white hover:bg-white hover:text-primary transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-white/25 active:scale-95">
               Subscribe to Newsletter
             </Button>

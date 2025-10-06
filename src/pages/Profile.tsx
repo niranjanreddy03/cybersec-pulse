@@ -149,36 +149,36 @@ export default function Profile() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5 p-4">
-      <div className="container max-w-2xl mx-auto pt-8">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5 p-4 pb-20 md:pb-4">
+      <div className="container max-w-2xl mx-auto pt-4 md:pt-8">
         <Card>
-          <CardHeader className="text-center">
-            <div className="flex items-center justify-center space-x-2 mb-4">
-              <Shield className="h-6 w-6 text-primary" />
-              <span className="text-lg font-semibold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+          <CardHeader className="text-center px-4 md:px-6">
+            <div className="flex items-center justify-center space-x-2 mb-3 md:mb-4">
+              <Shield className="h-5 w-5 md:h-6 md:w-6 text-primary" />
+              <span className="text-base md:text-lg font-semibold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                 Your Profile
               </span>
             </div>
             
-            <div className="flex justify-center mb-4">
-              <Avatar className="h-20 w-20">
+            <div className="flex justify-center mb-3 md:mb-4">
+              <Avatar className="h-16 w-16 md:h-20 md:w-20">
                 <AvatarImage src={user.user_metadata?.avatar_url} />
-                <AvatarFallback className="text-lg">
+                <AvatarFallback className="text-base md:text-lg">
                   {getInitials(fullName || user.email?.charAt(0) || "U")}
                 </AvatarFallback>
               </Avatar>
             </div>
             
-            <CardTitle>Welcome, {fullName || "User"}</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-xl md:text-2xl">Welcome, {fullName || "User"}</CardTitle>
+            <CardDescription className="text-sm">
               Manage your CyberSecBulletain account settings
             </CardDescription>
           </CardHeader>
           
-          <CardContent className="space-y-6">
+          <CardContent className="space-y-4 md:space-y-6 px-4 md:px-6">
             {/* Account Information */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Account Information</h3>
+            <div className="space-y-3 md:space-y-4">
+              <h3 className="text-base md:text-lg font-semibold">Account Information</h3>
               
               <div className="grid gap-4">
                 <div className="flex items-center space-x-3 p-3 bg-muted rounded-lg">
@@ -202,8 +202,8 @@ export default function Profile() {
             </div>
 
             {/* Update Profile */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Update Profile</h3>
+            <div className="space-y-3 md:space-y-4">
+              <h3 className="text-base md:text-lg font-semibold">Update Profile</h3>
               
               <form onSubmit={handleUpdateProfile} className="space-y-4">
                 <div className="space-y-2">
@@ -228,8 +228,8 @@ export default function Profile() {
             </div>
 
             {/* Newsletter Subscription */}
-            <div className="space-y-4 pt-4 border-t">
-              <h3 className="text-lg font-semibold">Newsletter Subscription</h3>
+            <div className="space-y-3 md:space-y-4 pt-3 md:pt-4 border-t">
+              <h3 className="text-base md:text-lg font-semibold">Newsletter Subscription</h3>
               
               {checkingSubscription ? (
                 <div className="flex items-center space-x-2 text-muted-foreground">
@@ -279,8 +279,8 @@ export default function Profile() {
             </div>
 
             {/* Account Actions */}
-            <div className="space-y-4 pt-4 border-t">
-              <h3 className="text-lg font-semibold">Account Actions</h3>
+            <div className="space-y-3 md:space-y-4 pt-3 md:pt-4 border-t">
+              <h3 className="text-base md:text-lg font-semibold">Account Actions</h3>
               
               <div className="flex flex-col space-y-2">
                 <Button 
