@@ -48,7 +48,7 @@ export function Navigation({ isAuthenticated = false, userRole, onLoginClick, on
               <Menu className="h-5 w-5" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="w-80 overflow-y-auto max-h-screen">
+          <SheetContent side="right" className="w-80 overflow-y-auto max-h-screen">
             <SheetHeader>
               <SheetTitle className="flex items-center space-x-2">
                 <Shield className="h-6 w-6 text-primary" />
