@@ -44,11 +44,11 @@ export function Navigation({ isAuthenticated = false, userRole, onLoginClick, on
         {/* Mobile Hamburger Menu - On the right */}
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger asChild className="md:hidden">
-            <Button variant="ghost" size="sm">
+            <Button variant="ghost" size="sm" aria-label="Menu">
               <Menu className="h-5 w-5" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="w-80 overflow-y-auto">
+          <SheetContent side="left" className="w-80 overflow-y-auto max-h-screen">
             <SheetHeader>
               <SheetTitle className="flex items-center space-x-2">
                 <Shield className="h-6 w-6 text-primary" />
