@@ -149,50 +149,50 @@ export default function Profile() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5 p-4 pb-20 md:pb-4">
-      <div className="container max-w-2xl mx-auto pt-4 md:pt-8">
-        <Card>
-          <CardHeader className="text-center px-4 md:px-6">
-            <div className="flex items-center justify-center space-x-2 mb-3 md:mb-4">
-              <Shield className="h-5 w-5 md:h-6 md:w-6 text-primary" />
-              <span className="text-base md:text-lg font-semibold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5 px-3 py-4 pb-24 md:p-8 md:pb-8">
+      <div className="container max-w-2xl mx-auto">
+        <Card className="border-0 md:border shadow-none md:shadow-sm">
+          <CardHeader className="text-center px-4 py-6 md:px-6">
+            <div className="flex items-center justify-center space-x-2 mb-4">
+              <Shield className="h-6 w-6 text-primary" />
+              <span className="text-lg font-semibold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                 Your Profile
               </span>
             </div>
             
-            <div className="flex justify-center mb-3 md:mb-4">
-              <Avatar className="h-16 w-16 md:h-20 md:w-20">
+            <div className="flex justify-center mb-4">
+              <Avatar className="h-20 w-20 md:h-24 md:w-24">
                 <AvatarImage src={user.user_metadata?.avatar_url} />
-                <AvatarFallback className="text-base md:text-lg">
+                <AvatarFallback className="text-xl">
                   {getInitials(fullName || user.email?.charAt(0) || "U")}
                 </AvatarFallback>
               </Avatar>
             </div>
             
-            <CardTitle className="text-xl md:text-2xl">Welcome, {fullName || "User"}</CardTitle>
-            <CardDescription className="text-sm">
+            <CardTitle className="text-xl md:text-2xl mb-2">Welcome, {fullName || "User"}</CardTitle>
+            <CardDescription className="text-sm md:text-base">
               Manage your CyberSecBulletain account settings
             </CardDescription>
           </CardHeader>
           
-          <CardContent className="space-y-4 md:space-y-6 px-4 md:px-6">
+          <CardContent className="space-y-6 px-4 md:px-6 pb-6">
             {/* Account Information */}
-            <div className="space-y-3 md:space-y-4">
-              <h3 className="text-base md:text-lg font-semibold">Account Information</h3>
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold">Account Information</h3>
               
-              <div className="grid gap-4">
-                <div className="flex items-center space-x-3 p-3 bg-muted rounded-lg">
-                  <Mail className="h-4 w-4 text-muted-foreground" />
-                  <div>
-                    <Label className="text-sm font-medium">Email</Label>
-                    <p className="text-sm text-muted-foreground">{user.email}</p>
+              <div className="grid gap-3">
+                <div className="flex items-center space-x-3 p-4 bg-muted rounded-lg">
+                  <Mail className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+                  <div className="min-w-0 flex-1">
+                    <Label className="text-sm font-medium block">Email</Label>
+                    <p className="text-sm text-muted-foreground truncate">{user.email}</p>
                   </div>
                 </div>
                 
-                <div className="flex items-center space-x-3 p-3 bg-muted rounded-lg">
-                  <Calendar className="h-4 w-4 text-muted-foreground" />
-                  <div>
-                    <Label className="text-sm font-medium">Member Since</Label>
+                <div className="flex items-center space-x-3 p-4 bg-muted rounded-lg">
+                  <Calendar className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+                  <div className="min-w-0 flex-1">
+                    <Label className="text-sm font-medium block">Member Since</Label>
                     <p className="text-sm text-muted-foreground">
                       {new Date(user.created_at).toLocaleDateString()}
                     </p>
@@ -202,34 +202,34 @@ export default function Profile() {
             </div>
 
             {/* Update Profile */}
-            <div className="space-y-3 md:space-y-4">
-              <h3 className="text-base md:text-lg font-semibold">Update Profile</h3>
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold">Update Profile</h3>
               
               <form onSubmit={handleUpdateProfile} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="fullName">Full Name</Label>
+                  <Label htmlFor="fullName" className="text-base">Full Name</Label>
                   <div className="relative">
-                    <UserIcon className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                     <Input
                       id="fullName"
                       type="text"
                       placeholder="Enter your full name"
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
-                      className="pl-10"
+                      className="pl-10 h-12 text-base"
                     />
                   </div>
                 </div>
                 
-                <Button type="submit" disabled={updating}>
+                <Button type="submit" disabled={updating} className="w-full h-12 text-base">
                   {updating ? "Updating..." : "Update Profile"}
                 </Button>
               </form>
             </div>
 
             {/* Newsletter Subscription */}
-            <div className="space-y-3 md:space-y-4 pt-3 md:pt-4 border-t">
-              <h3 className="text-base md:text-lg font-semibold">Newsletter Subscription</h3>
+            <div className="space-y-4 pt-6 border-t">
+              <h3 className="text-lg font-semibold">Newsletter Subscription</h3>
               
               {checkingSubscription ? (
                 <div className="flex items-center space-x-2 text-muted-foreground">
@@ -238,21 +238,20 @@ export default function Profile() {
                 </div>
               ) : newsletterSubscription ? (
                 <div className="space-y-3">
-                  <div className="flex items-center space-x-3 p-3 bg-primary/10 rounded-lg border">
-                    <Bell className="h-4 w-4 text-primary" />
-                    <div className="flex-1">
-                      <Label className="text-sm font-medium text-primary">Newsletter Subscribed</Label>
+                  <div className="flex items-center space-x-3 p-4 bg-primary/10 rounded-lg border">
+                    <Bell className="h-5 w-5 text-primary flex-shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <Label className="text-sm font-medium text-primary block">Newsletter Subscribed</Label>
                       <p className="text-xs text-muted-foreground">
                         Subscribed on {new Date(newsletterSubscription.subscribed_at).toLocaleDateString()}
                       </p>
                     </div>
-                    <Badge variant="secondary">Active</Badge>
+                    <Badge variant="secondary" className="flex-shrink-0">Active</Badge>
                   </div>
                   <Button 
                     variant="outline" 
-                    size="sm"
                     onClick={handleUnsubscribe}
-                    className="w-full"
+                    className="w-full h-11"
                   >
                     <BellOff className="h-4 w-4 mr-2" />
                     Unsubscribe
@@ -260,10 +259,10 @@ export default function Profile() {
                 </div>
               ) : (
                 <div className="space-y-3">
-                  <div className="flex items-center space-x-3 p-3 bg-muted rounded-lg">
-                    <BellOff className="h-4 w-4 text-muted-foreground" />
-                    <div>
-                      <Label className="text-sm font-medium">Newsletter Not Subscribed</Label>
+                  <div className="flex items-center space-x-3 p-4 bg-muted rounded-lg">
+                    <BellOff className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+                    <div className="min-w-0 flex-1">
+                      <Label className="text-sm font-medium block">Newsletter Not Subscribed</Label>
                       <p className="text-xs text-muted-foreground">
                         Stay updated with the latest cybersecurity news
                       </p>
@@ -279,14 +278,14 @@ export default function Profile() {
             </div>
 
             {/* Account Actions */}
-            <div className="space-y-3 md:space-y-4 pt-3 md:pt-4 border-t">
-              <h3 className="text-base md:text-lg font-semibold">Account Actions</h3>
+            <div className="space-y-4 pt-6 border-t">
+              <h3 className="text-lg font-semibold">Account Actions</h3>
               
-              <div className="flex flex-col space-y-2">
+              <div className="flex flex-col space-y-3">
                 <Button 
                   variant="outline" 
                   onClick={() => navigate("/")}
-                  className="justify-start"
+                  className="justify-start h-11 text-base"
                 >
                   Back to Home
                 </Button>
@@ -297,7 +296,7 @@ export default function Profile() {
                     await supabase.auth.signOut();
                     navigate("/");
                   }}
-                  className="justify-start text-destructive hover:text-destructive"
+                  className="justify-start h-11 text-base text-destructive hover:text-destructive"
                 >
                   Sign Out
                 </Button>
