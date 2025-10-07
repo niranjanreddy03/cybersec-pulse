@@ -33,7 +33,15 @@ export function Navigation({ isAuthenticated = false, userRole, onLoginClick, on
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between px-4">
-        {/* Mobile Hamburger Menu - On the left */}
+        {/* Logo and Brand - On the left */}
+        <div className="flex items-center space-x-2">
+          <Shield className="h-8 w-8 text-primary" />
+          <span className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+            CyberSecBulletain
+          </span>
+        </div>
+
+        {/* Mobile Hamburger Menu - On the right */}
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger asChild className="md:hidden">
             <Button variant="ghost" size="sm">
@@ -182,14 +190,6 @@ export function Navigation({ isAuthenticated = false, userRole, onLoginClick, on
               </Button>
             </div>
           )}
-        </div>
-
-        {/* Logo and Brand - On the right for mobile */}
-        <div className="flex items-center space-x-2 md:absolute md:left-4">
-          <Shield className="h-8 w-8 text-primary" />
-          <span className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-            CyberSecBulletain
-          </span>
         </div>
       </div>
     </header>
