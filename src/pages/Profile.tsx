@@ -26,21 +26,18 @@ export default function Profile() {
     const getUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       
-      if (!session) {
-        navigate("/auth");
-        return;
+      if (session) {
+        setUser(session.user);
+        setFullName(session.user.user_metadata?.full_name || "");
+        // Check newsletter subscription status
+        await checkNewsletterSubscription(session.user.email);
       }
-
-      setUser(session.user);
-      setFullName(session.user.user_metadata?.full_name || "");
+      
       setLoading(false);
-
-      // Check newsletter subscription status
-      await checkNewsletterSubscription(session.user.email);
     };
 
     getUser();
-  }, [navigate]);
+  }, []);
 
   const checkNewsletterSubscription = async (email?: string) => {
     if (!email) return;
@@ -145,7 +142,62 @@ export default function Profile() {
   }
 
   if (!user) {
-    return null;
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5 px-3 py-4 pb-24 md:p-8 md:pb-8">
+        <div className="container max-w-md mx-auto">
+          <Card className="border-0 md:border shadow-none md:shadow-sm">
+            <CardHeader className="text-center px-4 py-6 md:px-6">
+              <div className="flex items-center justify-center space-x-2 mb-4">
+                <Shield className="h-6 w-6 text-primary" />
+                <span className="text-lg font-semibold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                  Profile
+                </span>
+              </div>
+              
+              <CardTitle className="text-xl md:text-2xl mb-2">Welcome to CyberSecBulletain</CardTitle>
+              <CardDescription className="text-sm md:text-base">
+                Sign in or create an account to access your profile
+              </CardDescription>
+            </CardHeader>
+            
+            <CardContent className="space-y-4 px-4 md:px-6 pb-6">
+              <div className="text-center space-y-4">
+                <p className="text-sm text-muted-foreground">
+                  Create an account to personalize your news feed, manage subscriptions, and get the latest cybersecurity updates.
+                </p>
+                
+                <div className="space-y-3">
+                  <Button 
+                    onClick={() => navigate("/auth")}
+                    className="w-full h-12 text-base"
+                  >
+                    Sign In
+                  </Button>
+                  
+                  <Button 
+                    onClick={() => navigate("/auth")}
+                    variant="outline"
+                    className="w-full h-12 text-base"
+                  >
+                    Create Account
+                  </Button>
+                </div>
+
+                <div className="pt-4">
+                  <Button 
+                    variant="ghost" 
+                    onClick={() => navigate("/")}
+                    className="text-sm"
+                  >
+                    Continue as Guest
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
   }
 
   return (
