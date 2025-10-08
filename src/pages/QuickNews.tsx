@@ -151,7 +151,7 @@ export default function QuickNews() {
               <Zap className="h-10 w-10 text-primary" />
               <div>
                 <h1 className="text-4xl font-bold">Quick News</h1>
-                <p className="text-muted-foreground">Real-time cybersecurity and tech updates</p>
+                <p className="text-muted-foreground">Cyber & Tech Breaking News</p>
               </div>
             </div>
             <Button onClick={handleRefresh} disabled={loading} variant="outline">

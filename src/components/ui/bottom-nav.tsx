@@ -1,4 +1,4 @@
-import { Home, Shield, Cpu, User } from "lucide-react";
+import { Home, Zap, FileText, User } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
 export function BottomNav() {
@@ -18,27 +18,27 @@ export function BottomNav() {
         </NavLink>
 
         <NavLink
-          to="/cyber-news"
+          to="/quick-news"
           className={({ isActive }) =>
             `flex flex-col items-center justify-center gap-1 flex-1 ${
               isActive ? "text-primary" : "text-muted-foreground"
             }`
           }
         >
-          <Shield className="h-5 w-5" />
-          <span className="text-xs">Cyber</span>
+          <Zap className="h-5 w-5" />
+          <span className="text-xs">Quick News</span>
         </NavLink>
 
         <NavLink
-          to="/tech-news"
+          to="/articles"
           className={({ isActive }) =>
             `flex flex-col items-center justify-center gap-1 flex-1 ${
               isActive ? "text-primary" : "text-muted-foreground"
             }`
           }
         >
-          <Cpu className="h-5 w-5" />
-          <span className="text-xs">Tech</span>
+          <FileText className="h-5 w-5" />
+          <span className="text-xs">Articles</span>
         </NavLink>
 
         <NavLink
