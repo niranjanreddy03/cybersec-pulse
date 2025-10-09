@@ -3,7 +3,6 @@ import { Article } from "@/components/ui/article-card";
 import { Card } from "@/components/ui/card";
 import { SearchBar } from "@/components/ui/search-bar";
 import { TabNavigation } from "@/components/ui/tab-navigation";
-import { CategoryPills } from "@/components/ui/category-pills";
 import { BottomNav } from "@/components/ui/bottom-nav";
 import { Shield, ArrowRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -83,7 +82,6 @@ export default function Home() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("news");
-  const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
 
 
@@ -156,8 +154,6 @@ export default function Home() {
           <TabNavigation
             tabs={[
               { label: "News", value: "news" },
-              { label: "Events", value: "events" },
-              { label: "Weather", value: "weather" },
             ]}
             defaultTab="news"
             onTabChange={setActiveTab}
@@ -167,12 +163,6 @@ export default function Home() {
 
       {/* Main Content */}
       <div className="container mx-auto px-4 py-6 space-y-6">
-        {/* Category Pills */}
-        <CategoryPills
-          activeCategory={activeCategory}
-          onCategoryChange={setActiveCategory}
-        />
-
         {/* Latest News Section - Prioritizing Cyber */}
         <section>
           <div className="flex items-center gap-2 mb-4">
