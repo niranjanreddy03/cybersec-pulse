@@ -1,13 +1,9 @@
 import { useState, useEffect } from "react";
 import { ArticleCard, Article } from "@/components/ui/article-card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Zap, Search, RefreshCw, Globe, AlertCircle } from "lucide-react";
+import { Zap, RefreshCw, Shield, Cpu } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { NewsCategoryFilter, NewsCategorySelect, newsCategories } from "@/components/ui/news-category-filter";
 
 // Mock API response structure
 interface NewsAPIResponse {
@@ -28,8 +24,6 @@ interface NewsAPIResponse {
 export default function QuickNews() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
   const { toast } = useToast();
 
@@ -48,16 +42,16 @@ export default function QuickNews() {
     content: apiArticle.content
   });
 
-  // Fetch news from NewsAPI via edge function
-  const fetchLatestNews = async (query: string = "", category: string = "all") => {
+  // Fetch cyber and tech news only
+  const fetchLatestNews = async () => {
     try {
       setLoading(true);
       
-      // Call our edge function to fetch news
+      // Call our edge function to fetch cyber and tech news
       const { data, error } = await supabase.functions.invoke('fetch-news', {
         body: { 
-          query: query.trim(),
-          category: category,
+          query: "cybersecurity OR technology",
+          category: "all",
           pageSize: 20 
         }
       });
@@ -95,20 +89,11 @@ export default function QuickNews() {
   };
 
   useEffect(() => {
-    fetchLatestNews("", selectedCategory);
-  }, [selectedCategory]);
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    fetchLatestNews(searchTerm, selectedCategory);
-  };
+    fetchLatestNews();
+  }, []);
 
   const handleRefresh = () => {
-    fetchLatestNews(searchTerm, selectedCategory);
-  };
-
-  const handleCategoryChange = (category: string) => {
-    setSelectedCategory(category);
+    fetchLatestNews();
   };
 
   const handleReadMore = (id: string) => {
@@ -122,13 +107,6 @@ export default function QuickNews() {
       });
     }
   };
-
-  const filteredArticles = searchTerm 
-    ? articles.filter(article =>
-        article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        article.excerpt.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    : articles;
 
   if (loading && articles.length === 0) {
     return (
@@ -151,7 +129,7 @@ export default function QuickNews() {
               <Zap className="h-10 w-10 text-primary" />
               <div>
                 <h1 className="text-4xl font-bold">Quick News</h1>
-                <p className="text-muted-foreground">Cyber & Tech Breaking News</p>
+                <p className="text-muted-foreground">Cybersecurity & Technology Breaking News</p>
               </div>
             </div>
             <Button onClick={handleRefresh} disabled={loading} variant="outline">
@@ -160,92 +138,28 @@ export default function QuickNews() {
             </Button>
           </div>
           
-          <div className="mb-6">
-            <h3 className="text-sm font-medium mb-3 text-muted-foreground">News Categories</h3>
-            <NewsCategoryFilter 
-              selectedCategory={selectedCategory}
-              onCategoryChange={handleCategoryChange}
-            />
-          </div>
-          
-          <div className="flex flex-wrap gap-2 mb-4">
-            <Badge variant="secondary" className="bg-primary/10 text-primary">
-              <Globe className="h-3 w-3 mr-1" />
-              Live Feed
-            </Badge>
-            <Badge variant="outline">
-              {newsCategories.find(cat => cat.id === selectedCategory)?.name || 'All Categories'}
-            </Badge>
-            <Badge variant="outline">Real-time Updates</Badge>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <Shield className="h-5 w-5 text-primary" />
+              <span className="font-medium">Cybersecurity</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Cpu className="h-5 w-5 text-primary" />
+              <span className="font-medium">Technology</span>
+            </div>
           </div>
 
-          <div className="text-sm text-muted-foreground">
+          <div className="text-sm text-muted-foreground mt-4">
             Last updated: {lastUpdated.toLocaleString()}
           </div>
         </div>
       </div>
 
       <div className="container mx-auto px-4 py-8">
-        {/* Search and Stats */}
-        <div className="grid lg:grid-cols-4 gap-6 mb-8">
-          <div className="lg:col-span-2">
-            <form onSubmit={handleSearch} className="flex gap-2">
-              <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder={`Search ${newsCategories.find(cat => cat.id === selectedCategory)?.name.toLowerCase()} news...`}
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-              <Button type="submit" disabled={loading}>
-                {loading ? <RefreshCw className="h-4 w-4 animate-spin" /> : "Search"}
-              </Button>
-            </form>
-          </div>
-          
-          <div>
-            <NewsCategorySelect 
-              selectedCategory={selectedCategory}
-              onCategoryChange={handleCategoryChange}
-            />
-          </div>
-          
-          <Card>
-            <CardContent className="p-4 text-center">
-              <div className="text-2xl font-bold text-primary">{articles.length}</div>
-              <div className="text-sm text-muted-foreground">Live Articles</div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* API Status */}
-        <Card className="mb-8 border-primary/20 bg-primary/5">
-          <CardHeader className="pb-4">
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <Globe className="h-5 w-5 text-primary" />
-              News API Status
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                <span className="text-sm">Connected to news sources</span>
-              </div>
-              <Badge variant="secondary">NewsAPI Connected</Badge>
-            </div>
-            <p className="text-sm text-muted-foreground mt-2">
-              Live news feed powered by NewsAPI - Real-time cybersecurity and technology updates
-            </p>
-          </CardContent>
-        </Card>
-
         {/* Articles */}
-        {filteredArticles.length > 0 ? (
+        {articles.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredArticles.map((article) => (
+            {articles.map((article) => (
               <ArticleCard
                 key={article.id}
                 article={article}
@@ -256,23 +170,16 @@ export default function QuickNews() {
           </div>
         ) : (
           <div className="text-center py-12">
-            <AlertCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No articles found</h3>
+            <Zap className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-semibold mb-2">No articles available</h3>
             <p className="text-muted-foreground mb-4">
-              {searchTerm 
-                ? `No news articles match your search for "${searchTerm}"`
-                : "No news articles available at the moment"
-              }
+              No cybersecurity or technology news articles available at the moment
             </p>
-            <Button variant="outline" onClick={() => {
-              setSearchTerm("");
-              handleRefresh();
-            }}>
+            <Button variant="outline" onClick={handleRefresh}>
               Refresh News Feed
             </Button>
           </div>
         )}
-
       </div>
     </div>
   );
