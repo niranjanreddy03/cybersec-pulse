@@ -5,19 +5,37 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-interface NewsAPIResponse {
-  status: string;
-  totalResults: number;
-  articles: {
-    source: { id: string; name: string };
-    author: string;
-    title: string;
-    description: string;
+interface GNewsArticle {
+  title: string;
+  description: string;
+  content: string;
+  url: string;
+  image: string;
+  publishedAt: string;
+  source: {
+    name: string;
     url: string;
-    urlToImage: string;
-    publishedAt: string;
-    content: string;
-  }[];
+  };
+}
+
+interface GNewsResponse {
+  totalArticles: number;
+  articles: GNewsArticle[];
+}
+
+interface OTXPulse {
+  id: string;
+  name: string;
+  description: string;
+  created: string;
+  modified: string;
+  author_name: string;
+  tags: string[];
+  references: string[];
+}
+
+interface OTXResponse {
+  results: OTXPulse[];
 }
 
 serve(async (req) => {
@@ -27,64 +45,94 @@ serve(async (req) => {
   }
 
   try {
-    const { query = '', pageSize = 20, category = 'all' } = await req.json();
+    const { pageSize = 20 } = await req.json();
     
-    // Define category-specific queries
-    const categoryQueries = {
-      'cybersecurity': 'cybersecurity OR "cyber security" OR hacking OR malware OR ransomware OR "data breach"',
-      'technology': 'technology OR "artificial intelligence" OR AI OR "machine learning" OR software OR hardware',
-      'business': 'business OR startup OR "venture capital" OR IPO OR merger OR acquisition',
-      'science': 'science OR research OR discovery OR breakthrough OR innovation OR study',
-      'health': 'health OR medical OR healthcare OR medicine OR pharmaceutical OR "clinical trial"',
-      'finance': 'finance OR banking OR cryptocurrency OR bitcoin OR "financial technology" OR fintech',
-      'all': 'technology OR cybersecurity OR business OR science OR health OR finance'
-    };
+    const gnewsApiKey = Deno.env.get('GNEWS_API_KEY');
+    const otxApiKey = Deno.env.get('OTX_API_KEY');
     
-    // Use category query or user's custom query, ensuring we always have a valid search term
-    let searchQuery = categoryQueries[category as keyof typeof categoryQueries];
-    
-    // If user provided a custom search and we're not in 'all' category, combine them
-    if (query.trim() && category !== 'all') {
-      searchQuery = `(${searchQuery}) AND (${query.trim()})`;
-    } else if (query.trim() && category === 'all') {
-      searchQuery = query.trim();
+    if (!gnewsApiKey) {
+      throw new Error('GNEWS_API_KEY is not configured');
     }
     
-    console.log('Using search query:', searchQuery);
-    
-    const newsApiKey = Deno.env.get('NEWS_API_KEY');
-    if (!newsApiKey) {
-      throw new Error('NEWS_API_KEY is not configured');
+    if (!otxApiKey) {
+      throw new Error('OTX_API_KEY is not configured');
     }
 
-    // Construct NewsAPI URL
-    const newsApiUrl = new URL('https://newsapi.org/v2/everything');
-    newsApiUrl.searchParams.append('q', searchQuery);
-    newsApiUrl.searchParams.append('pageSize', pageSize.toString());
-    newsApiUrl.searchParams.append('sortBy', 'publishedAt');
-    newsApiUrl.searchParams.append('language', 'en');
-    
-    console.log('Fetching news from NewsAPI:', newsApiUrl.toString());
+    console.log('Fetching cybersecurity news from GNews and OTX...');
 
-    const response = await fetch(newsApiUrl.toString(), {
+    // Fetch from GNews - cybersecurity articles
+    const gnewsUrl = new URL('https://gnews.io/api/v4/search');
+    gnewsUrl.searchParams.append('q', 'cybersecurity OR "cyber attack" OR hacking OR malware OR ransomware OR "data breach" OR "cyber threat"');
+    gnewsUrl.searchParams.append('lang', 'en');
+    gnewsUrl.searchParams.append('max', Math.min(pageSize, 10).toString());
+    gnewsUrl.searchParams.append('apikey', gnewsApiKey);
+    
+    console.log('Fetching from GNews...');
+    const gnewsResponse = await fetch(gnewsUrl.toString());
+    
+    let gnewsArticles: GNewsArticle[] = [];
+    if (gnewsResponse.ok) {
+      const gnewsData: GNewsResponse = await gnewsResponse.json();
+      gnewsArticles = gnewsData.articles || [];
+      console.log(`Fetched ${gnewsArticles.length} articles from GNews`);
+    } else {
+      console.error('GNews error:', gnewsResponse.status, await gnewsResponse.text());
+    }
+
+    // Fetch from OTX - threat intelligence pulses
+    const otxUrl = 'https://otx.alienvault.com/api/v1/pulses/subscribed';
+    
+    console.log('Fetching from OTX...');
+    const otxResponse = await fetch(otxUrl, {
       headers: {
-        'X-API-Key': newsApiKey,
-        'User-Agent': 'CyberNews-App/1.0',
+        'X-OTX-API-KEY': otxApiKey,
       },
     });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('NewsAPI error:', response.status, errorText);
-      throw new Error(`NewsAPI error: ${response.status} ${errorText}`);
+    
+    let otxPulses: OTXPulse[] = [];
+    if (otxResponse.ok) {
+      const otxData: OTXResponse = await otxResponse.json();
+      otxPulses = otxData.results?.slice(0, Math.min(pageSize, 10)) || [];
+      console.log(`Fetched ${otxPulses.length} threat pulses from OTX`);
+    } else {
+      console.error('OTX error:', otxResponse.status, await otxResponse.text());
     }
 
-    const newsData: NewsAPIResponse = await response.json();
+    // Convert OTX pulses to article format
+    const otxArticles = otxPulses.map(pulse => ({
+      source: { id: 'otx', name: 'AlienVault OTX' },
+      author: pulse.author_name,
+      title: pulse.name,
+      description: pulse.description,
+      url: `https://otx.alienvault.com/pulse/${pulse.id}`,
+      urlToImage: 'https://cybersixgill.com/wp-content/uploads/2021/06/AlienVault-OTX.png',
+      publishedAt: pulse.modified,
+      content: pulse.description,
+    }));
+
+    // Convert GNews articles to NewsAPI format
+    const gnewsFormattedArticles = gnewsArticles.map(article => ({
+      source: { id: article.source.url, name: article.source.name },
+      author: article.source.name,
+      title: article.title,
+      description: article.description,
+      url: article.url,
+      urlToImage: article.image,
+      publishedAt: article.publishedAt,
+      content: article.content,
+    }));
+
+    // Combine articles from both sources
+    const combinedArticles = [...gnewsFormattedArticles, ...otxArticles];
     
-    console.log(`Successfully fetched ${newsData.articles?.length || 0} articles`);
+    console.log(`Total combined articles: ${combinedArticles.length}`);
 
     return new Response(
-      JSON.stringify(newsData),
+      JSON.stringify({
+        status: 'ok',
+        totalResults: combinedArticles.length,
+        articles: combinedArticles,
+      }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200,
