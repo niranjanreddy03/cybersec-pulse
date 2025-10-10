@@ -45,7 +45,7 @@ serve(async (req) => {
   }
 
   try {
-    const { pageSize = 20 } = await req.json();
+    const { pageSize = 20, category = 'all' } = await req.json();
     
     const gnewsApiKey = Deno.env.get('GNEWS_API_KEY');
     const otxApiKey = Deno.env.get('OTX_API_KEY');
@@ -58,11 +58,22 @@ serve(async (req) => {
       throw new Error('OTX_API_KEY is not configured');
     }
 
-    console.log('Fetching cybersecurity news from GNews and OTX...');
+    console.log(`Fetching news from GNews and OTX for category: ${category}...`);
 
-    // Fetch from GNews - cybersecurity articles
+    // Determine search query based on category
+    let gnewsQuery = '';
+    if (category === 'cybersecurity') {
+      gnewsQuery = 'cybersecurity OR "cyber attack" OR hacking OR malware OR ransomware OR "data breach" OR "cyber threat"';
+    } else if (category === 'technology') {
+      gnewsQuery = 'technology OR "artificial intelligence" OR software OR hardware OR "tech industry" OR innovation';
+    } else {
+      // 'all' - combine both
+      gnewsQuery = '(cybersecurity OR "cyber attack" OR hacking OR malware OR ransomware OR "data breach") OR (technology OR "artificial intelligence" OR software OR hardware)';
+    }
+
+    // Fetch from GNews
     const gnewsUrl = new URL('https://gnews.io/api/v4/search');
-    gnewsUrl.searchParams.append('q', 'cybersecurity OR "cyber attack" OR hacking OR malware OR ransomware OR "data breach" OR "cyber threat"');
+    gnewsUrl.searchParams.append('q', gnewsQuery);
     gnewsUrl.searchParams.append('lang', 'en');
     gnewsUrl.searchParams.append('max', Math.min(pageSize, 10).toString());
     gnewsUrl.searchParams.append('apikey', gnewsApiKey);
@@ -79,23 +90,25 @@ serve(async (req) => {
       console.error('GNews error:', gnewsResponse.status, await gnewsResponse.text());
     }
 
-    // Fetch from OTX - threat intelligence pulses
-    const otxUrl = 'https://otx.alienvault.com/api/v1/pulses/subscribed';
-    
-    console.log('Fetching from OTX...');
-    const otxResponse = await fetch(otxUrl, {
-      headers: {
-        'X-OTX-API-KEY': otxApiKey,
-      },
-    });
-    
+    // Fetch from OTX only if category is cybersecurity or all
     let otxPulses: OTXPulse[] = [];
-    if (otxResponse.ok) {
-      const otxData: OTXResponse = await otxResponse.json();
-      otxPulses = otxData.results?.slice(0, Math.min(pageSize, 10)) || [];
-      console.log(`Fetched ${otxPulses.length} threat pulses from OTX`);
-    } else {
-      console.error('OTX error:', otxResponse.status, await otxResponse.text());
+    if (category === 'cybersecurity' || category === 'all') {
+      const otxUrl = 'https://otx.alienvault.com/api/v1/pulses/subscribed';
+      
+      console.log('Fetching from OTX...');
+      const otxResponse = await fetch(otxUrl, {
+        headers: {
+          'X-OTX-API-KEY': otxApiKey,
+        },
+      });
+      
+      if (otxResponse.ok) {
+        const otxData: OTXResponse = await otxResponse.json();
+        otxPulses = otxData.results?.slice(0, Math.min(pageSize, 10)) || [];
+        console.log(`Fetched ${otxPulses.length} threat pulses from OTX`);
+      } else {
+        console.error('OTX error:', otxResponse.status, await otxResponse.text());
+      }
     }
 
     // Convert OTX pulses to article format

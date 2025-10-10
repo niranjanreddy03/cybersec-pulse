@@ -18,9 +18,7 @@ export function Navigation({ isAuthenticated = false, userRole, onLoginClick, on
   const navItems = [
     { label: "Home", path: "/" },
     { label: "Quick News", path: "/quick-news" },
-    { label: "Tech News", path: "/tech-news" },
     { label: "Articles", path: "/articles" },
-    { label: "Cyber News", path: "/cyber-news" },
     { label: "Subscribe", path: "/subscribe" },
     { label: "About", path: "/about" },
   ];

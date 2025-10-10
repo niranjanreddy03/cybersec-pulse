@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { ArticleCard, Article } from "@/components/ui/article-card";
 import { Button } from "@/components/ui/button";
-import { Zap, RefreshCw, Shield, Cpu } from "lucide-react";
+import { Zap, RefreshCw, Shield, Cpu, Globe } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+
+type NewsCategory = "all" | "cybersecurity" | "technology";
 
 // Mock API response structure
 interface NewsAPIResponse {
@@ -25,6 +27,7 @@ export default function QuickNews() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
+  const [category, setCategory] = useState<NewsCategory>("all");
   const { toast } = useToast();
 
   // Convert NewsAPI format to our Article format
@@ -42,16 +45,16 @@ export default function QuickNews() {
     content: apiArticle.content
   });
 
-  // Fetch cyber and tech news only
+  // Fetch news based on category
   const fetchLatestNews = async () => {
     try {
       setLoading(true);
       
-      // Call our edge function to fetch cyber and tech news
+      // Call our edge function to fetch news
       const { data, error } = await supabase.functions.invoke('fetch-news', {
         body: { 
-          query: "cybersecurity OR technology",
-          category: "all",
+          query: "",
+          category: category,
           pageSize: 20 
         }
       });
@@ -90,7 +93,7 @@ export default function QuickNews() {
 
   useEffect(() => {
     fetchLatestNews();
-  }, []);
+  }, [category]);
 
   const handleRefresh = () => {
     fetchLatestNews();
@@ -129,7 +132,11 @@ export default function QuickNews() {
               <Zap className="h-10 w-10 text-primary" />
               <div>
                 <h1 className="text-4xl font-bold">Quick News</h1>
-                <p className="text-muted-foreground">Cybersecurity & Technology Breaking News</p>
+                <p className="text-muted-foreground">
+                  {category === "all" && "Cybersecurity & Technology Breaking News"}
+                  {category === "cybersecurity" && "Cybersecurity Breaking News"}
+                  {category === "technology" && "Technology Breaking News"}
+                </p>
               </div>
             </div>
             <Button onClick={handleRefresh} disabled={loading} variant="outline">
@@ -138,18 +145,38 @@ export default function QuickNews() {
             </Button>
           </div>
           
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <Shield className="h-5 w-5 text-primary" />
-              <span className="font-medium">Cybersecurity</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Cpu className="h-5 w-5 text-primary" />
-              <span className="font-medium">Technology</span>
-            </div>
+          {/* Category Filter Buttons */}
+          <div className="flex items-center gap-3 mb-4">
+            <Button
+              variant={category === "all" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setCategory("all")}
+              className="flex items-center gap-2"
+            >
+              <Globe className="h-4 w-4" />
+              All News
+            </Button>
+            <Button
+              variant={category === "cybersecurity" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setCategory("cybersecurity")}
+              className="flex items-center gap-2"
+            >
+              <Shield className="h-4 w-4" />
+              Cybersecurity
+            </Button>
+            <Button
+              variant={category === "technology" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setCategory("technology")}
+              className="flex items-center gap-2"
+            >
+              <Cpu className="h-4 w-4" />
+              Technology
+            </Button>
           </div>
 
-          <div className="text-sm text-muted-foreground mt-4">
+          <div className="text-sm text-muted-foreground">
             Last updated: {lastUpdated.toLocaleString()}
           </div>
         </div>

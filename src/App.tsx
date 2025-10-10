@@ -11,8 +11,6 @@ import { Navigation } from "@/components/ui/navigation";
 import { Footer } from "@/components/ui/footer";
 import Home from "./pages/Home";
 import QuickNews from "./pages/QuickNews";
-import TechNews from "./pages/TechNews";
-import CyberNews from "./pages/CyberNews";
 import Subscribe from "./pages/Subscribe";
 import About from "./pages/About";
 import Auth from "./pages/Auth";
@@ -108,8 +106,6 @@ function AppContent() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/quick-news" element={<QuickNews />} />
-        <Route path="/tech-news" element={<TechNews />} />
-        <Route path="/cyber-news" element={<CyberNews />} />
         <Route path="/subscribe" element={<Subscribe />} />
         <Route path="/about" element={<About />} />
         
