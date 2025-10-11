@@ -49,6 +49,7 @@ export default function QuickNews() {
   const fetchLatestNews = async () => {
     try {
       setLoading(true);
+      console.log(`Fetching ${category} news...`);
       
       // Call our edge function to fetch news
       const { data, error } = await supabase.functions.invoke('fetch-news', {
@@ -59,6 +60,8 @@ export default function QuickNews() {
         }
       });
 
+      console.log('Fetch news response:', { data, error });
+
       if (error) {
         throw new Error(error.message);
       }
@@ -67,23 +70,29 @@ export default function QuickNews() {
         throw new Error(data.error);
       }
 
+      if (!data.articles || data.articles.length === 0) {
+        console.warn('No articles returned from API');
+      }
+
       // Convert API data to our format
       const convertedArticles = data.articles?.map((article: NewsAPIResponse['articles'][0], index: number) => 
         convertToArticle(article, index)
       ) || [];
 
+      console.log(`Converted ${convertedArticles.length} articles`);
       setArticles(convertedArticles);
       setLastUpdated(new Date());
       
+      const categoryLabel = category === "all" ? "cybersecurity & technology" : category;
       toast({
         title: "News Updated",
-        description: `Fetched ${convertedArticles.length} live articles from NewsAPI`,
+        description: `Fetched ${convertedArticles.length} ${categoryLabel} articles`,
       });
     } catch (error) {
       console.error("Error fetching news:", error);
       toast({
         title: "Error",
-        description: "Failed to fetch latest news from NewsAPI. Please try again.",
+        description: error instanceof Error ? error.message : "Failed to fetch latest news. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -93,7 +102,7 @@ export default function QuickNews() {
 
   useEffect(() => {
     fetchLatestNews();
-  }, [category]);
+  }, [category]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleRefresh = () => {
     fetchLatestNews();
