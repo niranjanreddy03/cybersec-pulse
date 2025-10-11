@@ -104,6 +104,57 @@ export type Database = {
         }
         Relationships: []
       }
+      fetched_news: {
+        Row: {
+          author: string | null
+          category: string
+          content: string | null
+          created_at: string
+          description: string | null
+          fetched_at: string
+          id: string
+          image_url: string | null
+          published_at: string | null
+          source_id: string | null
+          source_name: string
+          title: string
+          updated_at: string
+          url: string
+        }
+        Insert: {
+          author?: string | null
+          category: string
+          content?: string | null
+          created_at?: string
+          description?: string | null
+          fetched_at?: string
+          id?: string
+          image_url?: string | null
+          published_at?: string | null
+          source_id?: string | null
+          source_name: string
+          title: string
+          updated_at?: string
+          url: string
+        }
+        Update: {
+          author?: string | null
+          category?: string
+          content?: string | null
+          created_at?: string
+          description?: string | null
+          fetched_at?: string
+          id?: string
+          image_url?: string | null
+          published_at?: string | null
+          source_id?: string | null
+          source_name?: string
+          title?: string
+          updated_at?: string
+          url?: string
+        }
+        Relationships: []
+      }
       newsletter_subscriptions: {
         Row: {
           active: boolean

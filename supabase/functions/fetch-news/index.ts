@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -49,6 +50,8 @@ serve(async (req) => {
     
     const gnewsApiKey = Deno.env.get('GNEWS_API_KEY');
     const otxApiKey = Deno.env.get('OTX_API_KEY');
+    const supabaseUrl = Deno.env.get('SUPABASE_URL');
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
     
     if (!gnewsApiKey) {
       throw new Error('GNEWS_API_KEY is not configured');
@@ -57,6 +60,13 @@ serve(async (req) => {
     if (!otxApiKey) {
       throw new Error('OTX_API_KEY is not configured');
     }
+
+    if (!supabaseUrl || !supabaseServiceKey) {
+      throw new Error('Supabase configuration is missing');
+    }
+
+    // Initialize Supabase client
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
     console.log(`Fetching news from GNews and OTX for category: ${category}...`);
 
@@ -139,6 +149,35 @@ serve(async (req) => {
     const combinedArticles = [...gnewsFormattedArticles, ...otxArticles];
     
     console.log(`Total combined articles: ${combinedArticles.length}`);
+
+    // Store articles in database
+    const articlesToStore = combinedArticles.map(article => ({
+      title: article.title,
+      description: article.description,
+      url: article.url,
+      image_url: article.urlToImage,
+      published_at: article.publishedAt,
+      source_name: article.source.name,
+      source_id: article.source.id,
+      author: article.author,
+      content: article.content,
+      category: category,
+    }));
+
+    // Use upsert to avoid duplicates based on URL
+    const { error: dbError } = await supabase
+      .from('fetched_news')
+      .upsert(articlesToStore, { 
+        onConflict: 'url',
+        ignoreDuplicates: false 
+      });
+
+    if (dbError) {
+      console.error('Error storing articles in database:', dbError);
+      // Don't fail the request if storage fails, just log it
+    } else {
+      console.log(`Successfully stored ${articlesToStore.length} articles in database`);
+    }
 
     return new Response(
       JSON.stringify({
